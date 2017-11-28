@@ -44,11 +44,16 @@ create table term_stats (
     frequency integer
 );
 
-create table cluster_layout (
+create table term_layout (
     term text primary key,
     x real,
     y real,
-    cluster_id integer
+    foreign key(term) references term_stats(term)
+);
+
+create table ignored_terms (
+    term text primary key,
+    foreign key(term) references term_stats(term)
 );
 
 create table term_mapping (

@@ -8,6 +8,7 @@
   import Server from 'src/server'
 
   export default {
+    props: ['projectId'],
     data () {
       return {
         loaded: false,
@@ -18,7 +19,7 @@
     },
     mounted () {
       this.$nextTick(() => {
-        // this.getData()
+        this.getData()
       })
     },
     methods: {
@@ -29,8 +30,16 @@
         }
       },
       getData () {
-        Server.getClusterLayout().then((response) => {
-          console.log(response)
+        Server.getTermLayout(this.projectId).then((response) => {
+          let terms = []
+          let termVectors = []
+          response.data.terms.forEach((term) => {
+            terms.push(term)
+            termVectors.push(term.position)
+          })
+          this.terms = terms
+          this.termVectors = termVectors
+          this.clusterLabels = Object.keys(response.data.clusters)
         })
       },
       draw (terms, termVectors, clusterLabels, padding = 20) {
@@ -45,21 +54,29 @@
           .attr('width', width)
           .attr('height', height)
 
-        let nodes = svg.selectAll('circle')
+        let circles = svg.selectAll('circle')
           .data(termVectors)
           .enter()
-          .append('g')
+          .append('circle')
           .attr('transform', (d, i) => {
             d.x = xScale(d[0])
             d.y = yScale(d[1])
             return `translate(${d.x},${d.y})`
           })
-        nodes.append('circle')
           .attr('r', (d, i) => 6)
-          .style('fill', (d) => 'blue')
-        nodes.append('text')
+          .style('fill', (d) => '#8ac8f2')
+          .append('title').text((d, i) => terms[i].name)
+
+        svg.selectAll('text')
+          .data(terms)
+          .enter()
+          .append('text')
           .attr('text-anchor', 'middle')
-          .text((d, i) => terms[i])
+          .attr('transform', (d, i) => {
+            let e = circles.data()[i]
+            return `translate(${e.x},${e.y})`
+          })
+          .text((d, i) => d.name)
       }
     }
   }
@@ -67,4 +84,7 @@
 <style lang="stylus">
   #cluster
     height: 100%
+    svg
+      circle:hover
+        stroke: black
 </style>

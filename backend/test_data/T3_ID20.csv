@@ -1,0 +1,459 @@
+Name,Text,Onset,Offset,Question
+Mother,it is a Teddy bear.,1.53,2.97,FALSE
+Mother,oh thank you.,3.51,4.37,FALSE
+Mother,you are finished with the bikkie.,4.84,6.09,FALSE
+Mother,yeah?,9.92,10.61,TRUE
+Mother,what is in there?,11.86,13.27,TRUE
+Mother,oh it is cheese.,14.46,15.45,FALSE
+Mother,is Mummy eating cheese?,15.98,16.72,TRUE
+Mother,cheese?,16.87,17.17,TRUE
+Mother,[ &=imit:eating ].,17.235,18.245,FALSE
+Mother,yumyum.,18.485,19.365,FALSE
+Mother,"oh, drinking ,, am I?",22.195,23.555,TRUE
+Mother,[ &=imit:eating ].,24.97,25.98,FALSE
+Mother,you too. you have a drink?,26.46,27.54,TRUE
+Mother,[ &=imit:eating ].,29.99,31,FALSE
+Mother,what else is in there?,31.7,32.84,TRUE
+Mother,"oh, yes.",34.695,35.655,FALSE
+Mother,a plate.,36.41,37.27,FALSE
+Mother,you do like the Teddy bear?,43.125,44.425,TRUE
+Mother,what is this then?,44.445,45.055,TRUE
+Mother,what can we use this for?,45.47,46.64,TRUE
+Mother,are you gonna [ :going to ] dry the Teddy?,49.97,51.11,TRUE
+Mother,I let you dry the Teddy?,51.5,52.79,TRUE
+Mother,how did he get wet?,53.895,55.405,TRUE
+Mother,is the Teddy all dry?,58.735,60.225,TRUE
+Mother,oh.,62.275,63.33,FALSE
+Mother,*mmhm cup.,64.97,65.843,FALSE
+Mother,good girl.,68.316,68.916,FALSE
+Mother,two cups.,71.129,71.666,FALSE
+Mother,what is this.,72.928,73.628,FALSE
+Mother,"yeah, a spoon.",75.5,76.646,FALSE
+Mother,here you go.,85.227,86.163,FALSE
+Mother,you are eating.,93.968,94.672,FALSE
+Mother,what are you eating Amelia?,94.672,95.972,TRUE
+Mother,what are you eating?,100.526,101.653,TRUE
+Mother,is that cheese in the cup or is that something different now?,102.453,104.989,TRUE
+Mother,oh good.,110.316,111.216,FALSE
+Mother,[ &=imit:eating ].,111.263,112.217,FALSE
+Mother,yummy.,112.217,112.89,FALSE
+Mother,can Mummy have one?,114.63,115.284,TRUE
+Mother,"oh, thank you.",119.152,120.143,FALSE
+Mother,[ &=imit:eating ].,120.436,121.327,FALSE
+Mother,"oh, thank you.",123.436,124.154,FALSE
+Mother,[ &=imit:eating ].,124.608,125.471,FALSE
+Mother,I think Daddy has his telephone.,131.1,132.318,FALSE
+Mother,but that is a different one.,132.808,134.172,FALSE
+Mother,who you +/.,134.817,135.39,FALSE
+Mother,"yeah, who are you going to call?",136.117,137.262,TRUE
+Mother,are you calling Daddy?,140.933,142.097,TRUE
+Mother,yeah?,143.865,144.319,TRUE
+Mother,what about Nannan?,144.588,145.515,TRUE
+Mother,are you going to call Nannan?,145.533,146.405,TRUE
+Mother,your Bumpy?,152.177,152.968,TRUE
+Mother,yeah?,158.968,159.568,TRUE
+Mother,right behind you.,164.354,165.318,FALSE
+Mother,"oh, is it Teddy talking now?",168.417,169.753,TRUE
+Mother,who is Teddy going to talk to?,174.503,175.949,TRUE
+Mother,is Teddy talking to Daddy?,182.448,183.566,TRUE
+Mother,(is) Daddy good?,183.611,184.093,TRUE
+Mother,oy?,186.92,187.429,TRUE
+Mother,whois Teddy phoning now?,195.801,198.092,TRUE
+Mother,"Nannan and Bumpy, okay.",200.868,202.404,FALSE
+Mother,yeah?,216.303,216.894,TRUE
+Mother,is Teddy going to have a sleep?,221.894,223.422,TRUE
+Mother,yes?,225.526,225.944,TRUE
+Mother,it is his blankie?,229.421,230.357,TRUE
+Mother,what can you do with this?,243.672,244.827,TRUE
+Mother,cook?,246.917,247.507,TRUE
+Mother,you are gonna [ :going to ] do some cooking?,247.53,248.321,TRUE
+Mother,what are you cooking for Mummy?,251.971,253.693,TRUE
+Mother,are you cooking lunch?,253.693,254.475,TRUE
+Mother,do you want to pour some more in?,261.651,263.024,TRUE
+Mother,are you making soup?,263.352,264.589,TRUE
+Mother,making soup.,266.677,267.231,FALSE
+Mother,not finished? what else needs to go in?,271.444,273.044,TRUE
+Mother,would you like some cheese to go in?,273.071,274.762,TRUE
+Mother,here (you) go.,276.866,277.612,FALSE
+Mother,cheese can go in the pot.,277.657,278.802,FALSE
+Mother,oh yeah?,285.901,286.428,TRUE
+Mother,is it finished cooking? can Mummy try some?,288.506,290.479,TRUE
+Mother,no?,298.232,298.668,TRUE
+Mother,not finished?,299.097,299.997,TRUE
+Mother,"oh, it is finished?",300.691,301.545,TRUE
+Mother,"oh, yummy.",301.651,302.588,FALSE
+Mother,[ &=imit:eating ].,303.831,305.031,FALSE
+Mother,would you like to try some?,305.25,306.769,TRUE
+Mother,no?,308.15,308.804,TRUE
+Mother,no thanks.,308.94,309.758,FALSE
+Mother,yeah?,317.181,317.635,TRUE
+Mother,oh in there in there.,320.394,321.258,FALSE
+Mother,in there?,322.357,323.094,TRUE
+Mother,are you done?,329.006,329.979,TRUE
+Mother,yeah!,337.344,338.344,FALSE
+Mother,"It is cooking now ,, is it?",338.535,340.072,TRUE
+Mother,Teddy goes to sleep?,342.516,343.525,TRUE
+Mother,we put the blanket on?,343.802,345.011,TRUE
+Mother,sleepy Teddy.,351.919,352.764,FALSE
+Mother,(is) Teddy snoring?,357.705,359.068,TRUE
+Mother,"oh lunch, yummy, it looks good.",364.249,366.531,FALSE
+Mother,"are you going to feed Teddy lunch, now?",368.545,370.408,TRUE
+Mother,look!,371.227,371.654,FALSE
+Mother,Teddy want some lunch?,371.871,373.08,TRUE
+Mother,Teddy's awake?,373.135,373.999,TRUE
+Mother,you feed Teddy?,374.061,375.197,TRUE
+Mother,see?,379.735,380.298,TRUE
+Mother,or turn around?,380.533,381.442,TRUE
+Mother,"yeah, put Teddy here.",382.393,383.411,FALSE
+Mother,and feed Teddy his lunch.,383.609,384.873,FALSE
+Mother,there you go.,386.633,387.033,FALSE
+Mother,feed Teddy his lunch.,387.209,388.145,FALSE
+Mother,"oh he is sleeping still ,, is he?",391.372,392.636,TRUE
+Mother,okay.,392.827,393.309,FALSE
+Mother,there (you) go.,396.072,396.781,FALSE
+Mother,Teddy sleeping?,407.579,408.524,TRUE
+Mother,oh yumyum.,415.544,416.58,FALSE
+Mother,is he finished?,419.123,420.004,TRUE
+Mother,did he have his lunch?,420.086,420.995,TRUE
+Mother,Me?,426.148,426.657,TRUE
+Mother,yeah he had lunch?,428.106,429.306,TRUE
+Mother,was it a yummy lunch?,429.552,430.525,TRUE
+Mother,are you giving me lunch?,433.933,435.142,TRUE
+Mother,it is a little cup.,451.95,453.304,FALSE
+Mother,yeah?,460.898,461.453,TRUE
+Mother,are you stiring?,471.106,472.061,TRUE
+Mother,you (are) gonna [ : going to ] stir.,473.133,474.096,FALSE
+Mother,yeah?,490.598,491.416,TRUE
+Mother,"oh, thank you.",494.657,495.402,FALSE
+Mother,"yeah, good girl!",500.606,501.87,FALSE
+Mother,wow oh thank you.,511.52,513.43,FALSE
+Mother,"oh, for me?",516.552,517.825,TRUE
+Mother,"oh yeah, feed Mummy.",518.674,520.01,FALSE
+Mother,is it Teddy's?,526.617,527.417,TRUE
+Mother,my spoon.,528.965,529.519,FALSE
+Mother,"aw, yummy.",529.519,529.833,FALSE
+Mother,can I have lunch now?,529.833,530.887,TRUE
+Mother,no? Mummy can(no)t have lunch.,532.546,534.191,TRUE
+Mother,yeah?,541.663,542.126,TRUE
+Mother,[ &=imit:drinking. ],542.322,543.804,FALSE
+Mother,"I drank it all, can I have some more?",544.207,545.925,TRUE
+Mother,can I have more?,547.685,548.549,TRUE
+Mother,"oh, more, thank you. ",559.052,560.288,FALSE
+Mother,[ &=imit:drinking ].,560.503,561.175,FALSE
+Mother,can you turn this into a wand?,576.356,577.61,TRUE
+Mother,wand!,579.842,580.424,FALSE
+Mother,no?,581.246,582.092,TRUE
+Mother,doremiboo@o a slug!,584.773,586.564,FALSE
+Mother,"oh, no no don't pull that.",592.136,593.9,FALSE
+Mother,ta (be)cause this this is Mummy's ,594.904,595.968,FALSE
+Mother,it is stuck.,596.067,596.712,FALSE
+Mother,it is stuck!,597.631,598.249,FALSE
+Mother,needs to stay stuck.,598.875,599.92,FALSE
+Mother,good job.,600.581,601.29,FALSE
+Mother,yeah?,606.266,606.776,TRUE
+Mother,good girl.,614.794,615.803,FALSE
+Mother,what time does he sleep (un)til.,618.139,620.139,FALSE
+Mother,"he is a bit tired, okay.",623.552,625.07,FALSE
+Mother,thank you.,625.778,626.597,FALSE
+Mother,is he going to sleep a little bit more?,627.152,629.697,TRUE
+Mother,"a bit more, okay.",633.501,634.637,FALSE
+Mother,a bit more.,635.505,636.778,FALSE
+Mother,drawing?,720.589,721.753,TRUE
+Mother,are you drawing?,722.871,724.308,TRUE
+Mother,are you drawing here?,726.143,727.125,TRUE
+Mother,yeah.,729.325,729.961,FALSE
+Mother,what about this?,732.465,733.484,TRUE
+Mother,look Ammy.,733.959,734.814,FALSE
+Mother,stamp.,736.489,737.307,FALSE
+Mother,can you turn it over?,742.684,743.766,TRUE
+Mother,this way Am(elia).,744.088,745.097,FALSE
+Mother,good. stamp. ,745.269,746.523,FALSE
+Mother,yep.,747.646,748.227,FALSE
+Mother,stamp? here you go.,748.591,749.718,TRUE
+Mother,stamp.,750.422,751.113,FALSE
+Mother,stamp.,752.371,752.926,FALSE
+Mother,stamp [ x 4 ].,754.395,758.167,FALSE
+Mother,stamp [ x 4 ]. ,761.476,765.612,FALSE
+Mother,look at the colors coming up Amelia.,767.33,769.485,FALSE
+Mother,there is yellow.,769.621,770.848,FALSE
+Mother,and blue.,771.329,772.066,FALSE
+Mother,isn't it read?,774.923,776.569,TRUE
+Mother,gentle.,778.341,779.287,FALSE
+Mother,yeah! look at the colors.,781.377,783.586,FALSE
+Mother,green.,783.841,784.777,FALSE
+Mother,that one goes clac@o clac@o clac@o.,793.03,796.676,FALSE
+Mother,this one? Mummy? clac@o [ x 3 ].,796.73,799.03,TRUE
+Mother,all the colors are there now.,815.372,816.826,FALSE
+Mother,what colors can you see?,816.972,818.39,TRUE
+Mother,what are?,818.43,818.758,TRUE
+Mother,what colors?,819.076,820.24,TRUE
+Mother,a square.,825.099,825.835,FALSE
+Mother,"oh, you want the star.",826.239,827.584,FALSE
+Mother,there goes the star.,827.852,829.524,FALSE
+Mother,oups.,839.171,840.071,FALSE
+Mother,we can clean eat?,840.876,841.785,TRUE
+Mother,look.,842.261,842.643,FALSE
+Mother,wow.,845.571,846.771,FALSE
+Mother,you are gonna [ : going to ] use the star now?,848.247,850.202,TRUE
+Mother,isn't that the fun this here.,858.382,860.01,FALSE
+Mother,"you are going to play with that one ,, aren't you.",862.909,864.764,FALSE
+Mother,wow.,866.462,867.371,FALSE
+Mother,can you use the star now?,867.662,869.362,TRUE
+Mother,yes?,874.726,875.311,TRUE
+Mother,use the star now.,875.662,876.613,FALSE
+Mother,here (you) go stamps.,877.459,878.987,FALSE
+Mother,it is working.,881.291,882.082,FALSE
+Mother,you just need to go slow.,882.127,882.809,FALSE
+Mother,look.,882.854,883.327,FALSE
+Mother,yeah.,885.74,886.431,FALSE
+Mother,wra [ x 3 ].,891.503,892.594,FALSE
+Mother,what.,896.657,897.176,FALSE
+Mother,where is the red?,897.498,898.407,TRUE
+Mother,can you point to some red?,898.62,899.82,TRUE
+Mother,hello? can you point to red?,900.406,902.251,TRUE
+Mother,tapping.,913.132,913.823,FALSE
+Mother,here you go!,915.977,916.868,FALSE
+Mother,tapping.,918.008,919.108,FALSE
+Mother,bang@o [ x 3 ].,922.299,924.925,FALSE
+Mother,can you?,927.798,928.253,TRUE
+Mother,"yep, keep going keep going.",929.771,931.462,FALSE
+Mother,tapping.,932.02,932.793,FALSE
+Mother,tap@o [ x 3 ].,941.293,943.783,FALSE
+Mother,how about this one?,946.115,948.233,TRUE
+Mother,blue.,950.664,951.473,FALSE
+Mother,Millie.,954.518,955.372,FALSE
+Mother,"oh, ok. pushing instead.",955.672,957.509,FALSE
+Mother,yeah? pushing?,959.849,961.186,TRUE
+Mother,can you tap?,980.248,981.53,TRUE
+Mother,look.,981.93,982.484,FALSE
+Mother,"you made it all, yeah!",991.829,992.938,FALSE
+Mother,are you going to do it again?,995.046,996.119,TRUE
+Mother,one.,1004.273,1005.091,FALSE
+Mother,two.,1006.354,1007.209,FALSE
+Mother,you. two.,1011.532,1012.187,FALSE
+Mother,three.,1013.709,1014.509,FALSE
+Mother,four.,1020.654,1021.454,FALSE
+Mother,five.,1025.026,1025.872,FALSE
+Mother,push hard. push [ x 3 ].,1030.149,1031.83,FALSE
+Mother,here you go.,1034.516,1035.134,FALSE
+Mother,six.,1036.23,1036.73,FALSE
+Mother,yeah six.,1049.883,1051.065,FALSE
+Mother,seven.,1051.511,1052.193,FALSE
+Mother,eight!,1054.642,1055.206,FALSE
+Mother,yeah.,1061.783,1062.21,FALSE
+Mother,oh look what we (ha)ve got here.,1063.093,1064.084,FALSE
+Mother,look what is this Amie? ,1064.901,1065.901,TRUE
+Mother,"oh you like the heart, do you?",1072.009,1073.218,TRUE
+Mother,you like it?,1076.718,1077.954,TRUE
+Mother,good girl!,1094.421,1095.194,FALSE
+Mother,very nice.,1112.166,1113.457,FALSE
+Mother,turning.,1118.129,1118.865,FALSE
+Mother,turning turning.,1119.329,1120.901,FALSE
+Mother,almost.,1125.274,1125.656,FALSE
+Mother,yeah?,1137.699,1138.435,TRUE
+Mother,rattle [ x 3 ].,1140.176,1141.494,FALSE
+Mother,rattle [ x 3 ].,1142.181,1143.481,FALSE
+Mother,there!,1143.509,1143.809,FALSE
+Mother,[ &= laughs ].,1147.999,1148.918,FALSE
+Mother,"that is going to bite it ,, is it?",1153.154,1154.644,TRUE
+Mother,Daddy will be up soon.,1159.667,1160.931,FALSE
+Mother,"Ammie, look, blocks.",1167.379,1168.315,FALSE
+Mother,"it goes there ,, is it?",1174.054,1175.526,TRUE
+Mother,where does this one go Amelia?,1183.038,1185.393,TRUE
+Mother,yeah?,1190.387,1190.96,TRUE
+Mother,here you go.,1199.246,1200.055,FALSE
+Mother,what happened?,1205.009,1206.027,TRUE
+Mother,silly?,1213.504,1214.259,TRUE
+Mother,silly robot?,1214.495,1215.668,TRUE
+Mother,what is he puting down?,1221.086,1222.449,TRUE
+Mother,yeah?,1224.69,1225.126,TRUE
+Mother,naughty robot?,1235.502,1236.602,TRUE
+Mother,what is the?,1237.225,1237.498,TRUE
+Mother,why is the robot naughty?,1237.593,1238.566,TRUE
+Mother,he's ah being silly?,1241.261,1243.034,TRUE
+Mother,you are being silly robot now.,1251.22,1252.783,FALSE
+Mother,look.,1263.445,1263.972,FALSE
+Mother,"they all come out, Amelia.",1264.035,1265.235,FALSE
+Mother,[ &= laughs ].,1265.531,1266.385,FALSE
+Mother,you can put them back! ,1268.544,1269.872,FALSE
+Mother,[ &= laughs ].,1276.227,1277.536,FALSE
+Mother,not funny?,1277.563,1278.29,TRUE
+Mother,no!,1279.776,1280.476,FALSE
+Mother,[ &= laughs ].,1286.672,1288.099,FALSE
+Mother,[ &= laughs ].,1290.063,1291.49,FALSE
+Mother,[ &= laughs ].,1292.426,1293.808,FALSE
+Mother,why is it not funny Ammie?,1297.422,1298.831,TRUE
+Mother,you get more?,1320.054,1320.836,TRUE
+Mother,two more.,1329.88,1331.025,FALSE
+Child,a Teddy bear!,0.16,1.53,FALSE
+Child,Teddy bear!,10.64,11.91,FALSE
+Child,cheese.,13.63,14.34,FALSE
+Child,you have it.,29.14,30.29,FALSE
+Child,hmm? this.,33.01,34.64,TRUE
+Child,I like Teddy bear.,41.9,43.54,FALSE
+Child,for.,47.065,47.735,FALSE
+Child,disguise Teddy.,48.23,49.5,FALSE
+Child,xxx.,56.105,58.395,FALSE
+Child,there is a cup.,63.875,64.839,FALSE
+Child,x.,68.72,69.457,FALSE
+Child,a cup.,71.665,72.429,FALSE
+Child,a spoon.,74.064,75.128,FALSE
+Child,*mmm.,108.853,110.08,FALSE
+Child,[ &=imit:drinking ].,110.872,113.845,FALSE
+Child,yeah.,114.263,114.772,FALSE
+Child,here.,118.612,119.33,FALSE
+Child,here.,122.763,123.354,FALSE
+Child,[ &=imit:eating ].,126.254,127.264,FALSE
+Child,Daddy's telephone!,128.218,130.227,FALSE
+Child,it is working.,134.767,136.331,FALSE
+Child,Hello Teddy.,138.511,139.493,FALSE
+Child,hello Daddy.,142.761,143.697,FALSE
+Child,hello Bump+/.,149.873,150.873,FALSE
+Child,Bumpy.,151.046,151.928,FALSE
+Child,hello Bumpy.,153.564,155.491,FALSE
+Child,Coming to see you today.,156.377,158.877,FALSE
+Child,where is the Teddy go?,162.149,164.095,TRUE
+Child,hi?,176.518,177.209,TRUE
+Child,Daddy?,179.885,180.948,TRUE
+Child,oy.,186.329,186.848,FALSE
+Child,he speak to Nannan and Bumpy.,199.196,201.641,FALSE
+Child,hello?,202.622,203.113,TRUE
+Child,Nannan and Bumpy!,203.895,206.286,FALSE
+Child,xxx.,207.44,211.321,FALSE
+Child,what d(o)you do?,213.83,215.557,TRUE
+Child,what d(o)you do?,216.997,218.47,TRUE
+Child,what d(o)you do?,220.336,221.809,TRUE
+Child,yes.,225.067,225.64,FALSE
+Child,no.,226.066,226.775,FALSE
+Child,it is his blankie.,227.112,228.785,FALSE
+Child,xx.,231.275,233.393,FALSE
+Child,xx.,233.502,236.184,FALSE
+Child,xx.,237.947,241.084,FALSE
+Child,there.,242.699,243.436,FALSE
+Child,this.,244.308,244.844,FALSE
+Child,ha(h).,245.626,246.326,FALSE
+Child,cook?,246.389,246.953,TRUE
+Child,first.,257.761,258.934,FALSE
+Child,I need to pour this.,259.38,261.117,FALSE
+Child,xx.,263.232,264.423,FALSE
+Child,I am making soup.,265.301,266.756,FALSE
+Child,xx.,267.414,268.596,FALSE
+Child,"no, not finished.",269.581,270.936,FALSE
+Child,a piece.,278.852,279.97,FALSE
+Child,xx.,280.37,281.697,FALSE
+Child,xx.,283.315,285.761,FALSE
+Child,no.,290.532,291.023,FALSE
+Child,no.,295.523,296.023,FALSE
+Child,not.,296.848,297.539,FALSE
+Child,no!,307.508,307.89,FALSE
+Child,"no, not finished.",311.535,313.126,FALSE
+Child,xx.,313.926,316.953,FALSE
+Child,put this in the pot.,318.589,320.398,FALSE
+Child,put this here.,321.397,322.952,FALSE
+Child,not finished.,323.975,325.593,FALSE
+Child,this is on top!,326.238,328.202,FALSE
+Child,xx.,328.923,330.46,FALSE
+Child,Teddy goes to sleep.,340.73,342.903,FALSE
+Child,oh oh.,349.151,350.551,FALSE
+Child,[ &=imit:yawning ].,351.01,352.828,FALSE
+Child,[ &=imit:snoring ].,353.805,358.905,FALSE
+Child,[ &=imit:snoring ].,359.418,361.336,FALSE
+Child,it is ready let's have lunch!,362.309,364.163,FALSE
+Child,he (ha)s got sleep.,389.746,391.355,FALSE
+Child,he (ha)s gone to sleep.,394.126,395.463,FALSE
+Child,let's heat heat this up.,397.157,399.512,FALSE
+Child,oh.,400.938,401.611,FALSE
+Child,[ &=yawns ].,402.247,403.793,FALSE
+Child,Teddy? not.,405.233,406.587,TRUE
+Child,[ &=imit:eating ].,414.186,418.913,FALSE
+Child,no!,422.831,423.585,FALSE
+Child,bear +/.,423.626,424.681,FALSE
+Child,+/ had lunch.,426.721,427.648,FALSE
+Child,yeah.,429.379,430.015,FALSE
+Child,"yes, a *yum lunch.",432.174,433.701,FALSE
+Child,[ &=imit:pouring ].,435.323,437.178,FALSE
+Child,yes!,457.049,458.149,FALSE
+Child,ow!,458.98,460.708,FALSE
+Child,very hot!,461.357,463.157,FALSE
+Child,supper.,463.743,464.898,FALSE
+Child,a very hot supper.,465.679,468.343,FALSE
+Child,and this spoon.,470.224,471.815,FALSE
+Child,this stir.,472.378,473.378,FALSE
+Child,you stir like this!,474.628,478.382,FALSE
+Child,this stirs very fast!,478.655,481.464,FALSE
+Child,stir!,482.536,483.418,FALSE
+Child,[ &=laughs ].,487.417,489.145,FALSE
+Child,stir Mummy!,489.145,490.408,FALSE
+Child,for Mummy.,494.202,494.902,FALSE
+Child,like this.,498.799,499.508,FALSE
+Child,Teddy wants this.,524.562,526.599,FALSE
+Child,this your spoon.,527.811,529.384,FALSE
+Child,no.,531.833,532.305,FALSE
+Child,it is that way.,540.427,541.682,FALSE
+Child,no!,580.769,581.169,FALSE
+Child,is this stuck.,594.535,595.281,FALSE
+Child,[ &=imit:eating ].,605.317,606.744,FALSE
+Child,let's go to house.,608.33,610.121,FALSE
+Child,Teddy you sleep.,615.693,618.166,FALSE
+Child,a little bit tired.,621.043,623.452,FALSE
+Child,bit (.) bit (.) bit more.,629.992,633.228,FALSE
+Child,[ &=hums ].,725.206,736.587,FALSE
+Child,[ &=hums ].,736.862,743.507,FALSE
+Child,stamp.,749.713,750.586,FALSE
+Child,stamp.,751.935,752.526,FALSE
+Child,stamp [ x 15 ].,753.272,769.036,FALSE
+Child,blue!,772.656,773.256,FALSE
+Child,blue [ x 3 ].,773.856,775.965,FALSE
+Child,wack [ x 3 ].,776.331,780.668,FALSE
+Child,ta [ x 30 ].,799.128,814.272,FALSE
+Child,help.,823.78,824.726,FALSE
+Child,yeah.,833.499,834.162,FALSE
+Child,"yeah, I could pull too many things. (?)",834.39,836.88,TRUE
+Child,ow.,880.596,881.25,FALSE
+Child,"oh, a star.",884.59,885.89,FALSE
+Child,wra@b star.,887.816,889.18,FALSE
+Child,wra@b [ x 15 ].,889.417,896.453,FALSE
+Child,this.,908.715,909.378,FALSE
+Child,"oh, tapping!",911.933,913.178,FALSE
+Child,blue.,949.218,951.009,FALSE
+Child,we made it.,990.62,991.866,FALSE
+Child,ugh. push it.,1059.075,1060.647,FALSE
+Child,ah.,1066.063,1066.499,FALSE
+Child,oh more?,1066.673,1067.464,TRUE
+Child,Mummy?,1070.537,1071.464,TRUE
+Child,oh blunt (?) I like it.,1074.023,1076.741,TRUE
+Child,yes.,1080.195,1080.85,FALSE
+Child,a plant!,1125.947,1127.038,FALSE
+Child,it is a plant!,1131.644,1132.926,FALSE
+Child,you shake.,1135.79,1136.808,FALSE
+Child,When Daddy come?,1157.089,1158.862,TRUE
+Child,that is a blue duck.,1171.106,1173.488,FALSE
+Child,*ah.,1178.547,1179.429,FALSE
+Child,what is?,1180.438,1181.365,TRUE
+Child,hmm?,1186.672,1187.736,TRUE
+Child,quickly!,1189.051,1190.015,FALSE
+Child,ah!,1203.264,1204.727,FALSE
+Child,want to put it (.) there.,1208.268,1209.986,FALSE
+Child,silly robot!,1210.977,1212.895,FALSE
+Child,put it down!,1217.167,1218.858,FALSE
+Child,*uh.,1223.207,1223.662,FALSE
+Child,not xx.,1228.593,1230.566,FALSE
+Child,naughty robot!,1233.984,1235.348,FALSE
+Child,silly!,1239.075,1239.766,FALSE
+Child,robot!,1240.32,1241.365,FALSE
+Child,silly robot!,1243.847,1244.937,FALSE
+Child,silly robot!,1245.37,1246.406,FALSE
+Child,silly robot [ x 3 ].,1247.201,1251.928,FALSE
+Child,what?,1254.61,1254.955,TRUE
+Child,xx.,1256.599,1257.635,FALSE
+Child,[ &=growls ].,1258.872,1260.372,FALSE
+Child,silly xx [ &= mumbles].,1261.208,1263.163,FALSE
+Child,look!,1266.617,1267.59,FALSE
+Child,not (.) funny!,1273.931,1276.503,FALSE
+Child,that!,1278.931,1279.495,FALSE
+Child,that is not.,1283.581,1285.318,FALSE
+Child,funny.,1285.958,1287.058,FALSE
+Child,that is not.,1287.922,1288.713,FALSE
+Child,funny.,1290.917,1291.99,FALSE
+Child,robot.,1296.412,1297.621,FALSE
+Child,that is not (..) funny. ,1301.136,1303.654,FALSE

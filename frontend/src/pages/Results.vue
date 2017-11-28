@@ -18,7 +18,7 @@
       <recurrence-plot :projectId="projectId"></recurrence-plot>
     </div>
     <div class="ui bottom attached tab segment" data-tab="cluster">
-      <cluster-layout ref="cluster"></cluster-layout>
+      <cluster-layout :projectId="projectId" ref="cluster"></cluster-layout>
     </div>
     <div class="ui bottom attached tab segment" data-tab="similar-terms">
       <similar-terms :projectId="projectId" ref="similar-terms"></similar-terms>
@@ -69,4 +69,5 @@ export default {
       margin: 0
       padding: 0
       height: calc(100% - 100px)
+      overflow-y: auto
 </style>

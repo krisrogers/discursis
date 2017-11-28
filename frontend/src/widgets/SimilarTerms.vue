@@ -6,15 +6,22 @@
         <div class="text"></div>
         <i class="dropdown icon"></i>
         <div class="menu">
+          <div class="item">0.01</div>
+          <div class="item">0.025</div>
+          <div class="item">0.05</div>
           <div class="item">0.1</div>
-          <div class="item">0.2</div>
-          <div class="item">0.5</div>
-          <div class="item">1</div>
-          <div class="item">2</div>
+          <div class="item">0.15</div>
+          <div class="item">0.20</div>
+          <div class="item">0.25</div>
         </div>
       </div>
     </div>
     <div v-if="clusters">
+      <div class="ui divider"></div>
+      <b><u>{{ ignoredTerms.length }} Ignored Terms</u></b>
+      <p>{{ ignoredTerms.join(', ') }}</p>
+      <div class="ui divider"></div>
+      <b><u>{{ clusters.length }} Clusters</u></b>
       <p v-for="cluster in clusters"><b>{{ cluster.name }}</b>: {{ cluster.terms.join(', ') }}</p>
     </div>
   </div>
@@ -28,7 +35,8 @@
     props: ['projectId'],
     data () {
       return {
-        distanceThreshold: 0.5,
+        distanceThreshold: 0.01,
+        ignoredTerms: null,
         clusters: null
       }
     },
@@ -52,13 +60,14 @@
         dimmer.classList.add('active')
         Server.getSimilarTerms(this.projectId, this.distanceThreshold).then((response) => {
           let clusters = []
-          for (let clusterName in response.data) {
+          for (let clusterName in response.data.clusters) {
             clusters.push({
               name: clusterName,
-              terms: response.data[clusterName]
+              terms: response.data.clusters[clusterName]
             })
           }
           this.clusters = clusters
+          this.ignoredTerms = response.data.ignored_terms
           dimmer.classList.remove('active')
         })
       }

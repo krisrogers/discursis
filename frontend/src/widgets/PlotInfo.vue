@@ -15,6 +15,9 @@
           {{ selectedItem.text }}
         </div>
         <div class="ui segment">
+          <div v-if="selectedItem.themes">
+            <b>{{ selectedItem.themes.join(', ') }}</b>
+          </div>
           ({{ selectedItem.concepts.join(', ') }})
         </div>
       </div>

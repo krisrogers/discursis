@@ -3,14 +3,18 @@ This module allows creation and manipulation of projects.
 
 Projects encapsulate data, settings and results for a recurrence analysis.
 """
+from collections import Counter
+import csv
+from io import TextIOWrapper
 import os
 import shutil
 
 from sqlalchemy import Column, Integer, String
 
 from database import db_session, BaseModel
-from index import IndexReader, IndexUpdater
+from index import IndexReader, IndexUpdater, IndexWriter
 import processing
+import text_util
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -34,29 +38,72 @@ class Project(BaseModel):
         self.name = name
 
     def add_data(self, files):
-        """Load the project's data and process it."""
+        """
+        Load the project's data and process it.
+
+        TODO async?
+        """
         project_path = self.get_path()
         os.makedirs(project_path)
+        index_writer = IndexWriter(project_path)
+
         for f in files:
-            filename = _safe_name(f.filename)
-            f.save(os.path.join(project_path, filename))
-            # file_size = os.path.getsize(os.path.join(project_path, filename))
+            reader = csv.reader(TextIOWrapper(f))
 
-        # Index data; TODO should be a separate process
-        processing.index_files(project_path)
+            # Process headers
+            channel_id = None
+            metadata_index = {}
+            headers = [h.lower() for h in next(reader)]
+            for i, header in enumerate(headers):
+                header = header.strip().lower()
+                if header == 'text':
+                    text_index = i
+                else:
+                    field_id = index_writer.add_metadata_field(header)
+                    metadata_index[i] = field_id
+                    if header in ('channel', 'speaker', 'name'):
+                        channel_id = field_id
+
+            # Process rows
+            for row in reader:
+                utterance_metadata = {}
+                # TODO: split into smaller utterances?
+                for i, cell in enumerate(row):
+                    if i == text_index:
+                        utterance_text = cell
+                    else:
+                        utterance_metadata[metadata_index[i]] = cell
+                index_writer.add_utterance(
+                    utterance_metadata[channel_id], utterance_text, utterance_metadata,
+                    Counter(text_util.tokenize(utterance_text))
+                )
+
+        index_writer.finish()
+
         # processing.generate_cluster_layout(datadir)
-
+        self._create_term_layout()
         self._create_expansion_model()
 
-    def _create_expansion_model(self, threshold=0.5):
+    def get_reader(self):
+        """Get `IndexReader` for this project."""
+        return IndexReader(self.get_path())
+
+    def generate_term_clusters(self, distance_threshold=0.01):
+        """Generate term clusters for this project with given `distance_threshold`."""
+        reader = self.get_reader()
+        terms = reader.get_terms_ordered()
+        term_positions = reader.get_term_layout()
+        ignored_terms = reader.get_ignored_terms()
+        terms = list(filter(lambda t: t not in ignored_terms, terms))
+        positions = [term_positions[term] for term in terms]  # maintain order
+        distances = processing.find_similar_terms(positions, distance_threshold)
+        return processing.generate_term_clusters(terms, distances)
+
+    def _create_expansion_model(self):
         """Create and store expansion model for this project."""
-        project_path = self.get_path()
-        terms = IndexReader(project_path).get_terms_ordered()
-        distances = processing.find_similar_terms(terms, threshold)
-        term_groups = processing.generate_term_clusters(terms, distances)
-        print(term_groups)
-        updater = IndexUpdater(project_path)
-        updater.create_term_mappings(term_groups)
+        term_clusters = self.generate_term_clusters()
+        updater = self._get_updater()
+        updater.create_term_mappings(term_clusters)
         updater.finish()
 
     def get_path(self):
@@ -73,16 +120,25 @@ class Project(BaseModel):
     def generate_recurrence(self, model, num_terms=None):
         return processing.generate_recurrence(os.path.join(PROJECTS_DIR, str(self.id)), model, num_terms)
 
-    def get_term_clusters(self, threshold=0.5):
-        project_path = self.get_path()
-        if threshold == 0.5:
-            reader = IndexReader(project_path)
-            return reader.get_clusters()
-        print('wtf mate', threshold)
-        terms = IndexReader(project_path).get_terms_ordered()
-        distances = processing.find_similar_terms(terms, threshold)
-        term_groups = processing.generate_term_clusters(terms, distances)
-        return term_groups
+    def _create_term_layout(self):
+        """Generate and store 2D projection of term vectors."""
+        reader = self.get_reader()
+        terms = reader.get_terms_ordered()
+        positions, skipped_terms = processing.generate_2d_projection(terms)
+        terms = list(filter(lambda t: t not in skipped_terms, terms))
+        updater = self._get_updater()
+        updater.save_term_layout(terms, positions.tolist())
+        updater.save_ignored_terms(skipped_terms)
+        updater.finish()
+
+    def _get_writer(self):
+        """Get `IndexWriter` for this project."""
+        return IndexWriter(self.get_path())
+
+    def _get_updater(self):
+        """Get `IndexUpdater` for this project."""
+        return IndexUpdater(self.get_path())
+
 
 
 class ProjectError(Exception):
@@ -135,7 +191,7 @@ def get_project_dir(id):
     return os.path.join(PROJECTS_DIR, id)
 
 
-def list():
+def listall():
     """Return a list of all projects."""
     return Project.query.all()
 

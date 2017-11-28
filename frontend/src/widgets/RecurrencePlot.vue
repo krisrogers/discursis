@@ -1,6 +1,6 @@
 <template>
   <div id="plot-container">
-
+    <div class="utterance-count" v-if="utteranceCount">Showing Utterances 1 to {{ utterances.length }} of {{ utteranceCount }}</div>
     <!-- Plot options dialog -->
     <div class="ui right internal attached rail plot-options center">
       <div class="ui segment stacked">
@@ -9,11 +9,11 @@
           <i class="dropdown icon"></i>
           <div class="default text"></div>
           <div class="menu">
-            <div class="item" data-value="term-expansion">Term-Expansion</div>
-            <div class="item" data-value="term-expansion-delta">Term-Expansion Delta</div>
             <div class="item" data-value="composition">Compositional</div>
             <div class="item" data-value="composition-delta">Compositional Delta</div>
             <div class="item" data-value="term">Term</div>
+            <div class="item" data-value="term-expansion">Term-Expansion</div>
+            <div class="item" data-value="term-expansion-delta">Term-Expansion Delta</div>
           </div>
         </div>
         <i class="large add square icon settings-btn" @click="toggleSettings"></i>
@@ -60,13 +60,6 @@
               </div>
             </div>
           </div>
-          <div class="ui divider"></div>
-          <template v-if="modelType == 'composition'">
-            Composition Options
-          </template>
-          <template v-else>
-            Term Options
-          </template>
         </div>
       </div>
     </div>
@@ -87,17 +80,25 @@
   import Server from 'src/server'
   import EventBus from 'src/bus.js'
 
-  const COLOURS = ['red', 'blue']
+  // http://colorbrewer2.org
+  const COLOURS = [
+    '#1f78b4', '#e31a1c', '#b15928',
+    '#33a02c', '#fb9a99', '#ff7f00',
+    '#cab2d6', '#6a3d9a', '#ffff99'
+  ]
 
   export default {
     components: { PlotInfo },
     props: ['projectId'],
     data () {
       return {
+        utterances: null,
+        utteranceCount: null,
+        recurrenceMatrix: null,
         canvasEvent: false,
         initialised: false,
-        numTerms: 100,
-        modelType: 'term-expansion',
+        numTerms: 'all',
+        modelType: 'composition',
         sizing: 'scaled',
         recurrenceFloor: 0.3,
         boxSizeMin: 6,
@@ -141,7 +142,9 @@
             modal.classList.remove('active')
             this.recurrenceMatrix = response.data.recurrence_matrix
             this.utterances = response.data.utterances
-            console.log(this.utterances)
+            this.utteranceCount = response.data.utterance_count
+            console.log(response.data)
+            this.channels = response.data.channels
             this.draw()
           })
           .catch((error) => {
@@ -220,7 +223,7 @@
         let xPos = padding
         recurrenceMatrix.forEach((col, i) => {
           let iUtterance = this.utterances[i]
-          let colour = COLOURS[i % COLOURS.length]
+          let colour = COLOURS[this.channels.indexOf(iUtterance.channel)]
           iUtterance.colour = colour
           let colWidth, rowHeight
           if (this.sizing === 'uniform') {
@@ -252,7 +255,13 @@
             this.canvasEvent = false
             this.selectedItems = [item]
           }.bind(this, iUtterance))
-          createTooltip(diagBox, `Utterance: ${i + 1}\nConcepts: ${iUtterance.concepts.join(', ')}`)
+          let tipText = `Utterance: ${i + 1}`
+          if (iUtterance.themes) {
+            tipText += `\nThemes: ${iUtterance.themes.join(', ')}`
+          } else {
+            tipText += `\nConcepts: ${iUtterance.concepts.join(', ')}`
+          }
+          createTooltip(diagBox, tipText)
           layer.add(diagBox)
           let yPos = xPos + rowHeight
           for (let j = i + 1; j < col.length; j++) {
@@ -261,7 +270,7 @@
               rowHeight = boxSizeScale(jUtterance.length)
             }
             if (col[j] >= this.recurrenceFloor) {
-              let colour2 = COLOURS[j % COLOURS.length]
+              let colour2 = COLOURS[this.channels.indexOf(jUtterance.channel)]
               let boxConfig = {
                 x: xPos,
                 y: yPos,
@@ -294,8 +303,15 @@
                 this.selectedItems = [item1, item2]
               }.bind(this, iUtterance, jUtterance))
               let sim = Math.round(100 * col[j]) / 100
-              let sharedConcepts = iUtterance.concepts.filter((c) => jUtterance.concepts.indexOf(c) >= 0)
-              createTooltip(box, `${sim} \nUtterances: ${iUtterance.id + 1}, ${jUtterance.id + 1}\nShared concepts: ${sharedConcepts.join(', ')}`)
+              let tipText = `${sim} \nUtterances: ${iUtterance.id + 1}, ${jUtterance.id + 1}`
+              if (false && iUtterance.themes) {
+                let sharedThemes = iUtterance.themes.filter((c) => jUtterance.themes.indexOf(c) >= 0)
+                tipText += `\nShared themes: ${sharedThemes.join(', ')}`
+              } else {
+                let sharedConcepts = iUtterance.concepts.filter((c) => jUtterance.concepts.indexOf(c) >= 0)
+                tipText += `\nShared concepts: ${sharedConcepts.join(', ')}`
+              }
+              createTooltip(box, tipText)
               layer.add(box)
             }
             yPos += rowHeight
@@ -351,4 +367,15 @@
       margin-top: 5px
     div#plot
       height: 100%
+
+    .utterance-count
+      position: absolute
+      background-color: white
+      color: #95a6ac
+      margin-left: 10px
+      font-size: 0.9em
+      line-height: 0.9em
+      margin-bottom: 0
+      padding: 0
+      z-index: 99
 </style>

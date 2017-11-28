@@ -92,19 +92,6 @@ class IndexUpdater:
         # Cursor for future writing
         self.cursor = self.connection.cursor()
 
-    def save_cluster_layout(self, terms, positions, term_clusters):
-        """Save cluster layout of terms."""
-        insert_data = ((
-            term,
-            positions[i][0],
-            positions[i][1],
-            term_clusters[i]
-        ) for i, term in enumerate(terms))
-        self.cursor.executemany(
-            'insert into cluster_layout(term, x, y, cluster_id) values (?, ?, ?, ?)',
-            insert_data
-        )
-
     def create_term_mappings(self, term_groups):
         insert_data = []
         for lead_term, terms in term_groups.items():
@@ -116,6 +103,25 @@ class IndexUpdater:
         self.cursor.executemany(
             'insert into term_mapping(term, mapped_term) values (?, ?)',
             insert_data
+        )
+
+    def save_term_layout(self, terms, positions):
+        """Save `positions` of `terms` representing a 2D layout."""
+        insert_data = ((
+            term,
+            positions[i][0],
+            positions[i][1]
+        ) for i, term in enumerate(terms))
+        self.cursor.executemany(
+            'insert into term_layout(term, x, y) values (?, ?, ?)',
+            insert_data
+        )
+
+    def save_ignored_terms(self, terms):
+        """Save `terms` not used in layout/clustering."""
+        self.cursor.executemany(
+            'insert into ignored_terms(term) values (?)',
+            ((t,) for t in terms)
         )
 
     def finish(self):
@@ -156,8 +162,11 @@ class IndexReader:
             order by id asc
             """
         )
-        print(q)
         return self.cursor.execute(q, (start, start + limit)).fetchall()
+
+    def get_utterance_count(self):
+        """Return total number of utterances."""
+        return self.cursor.execute('select count(*) from utterance').fetchall()[0][0]
 
     def get_top_terms(self, limit):
         """Return `limit` top terms by frequency."""
@@ -171,17 +180,29 @@ class IndexReader:
             'select term from term_stats order by frequency desc'
         ).fetchall()]
 
+    def get_term_frequencies(self):
+        """Return term frequencies."""
+        return self.cursor.execute(
+            'select * from term_stats order by frequency desc'
+        ).fetchall()
+
+    def get_term_layout(self):
+        """Return 2d term layout in the form {term_name: (x, y)}."""
+        return {tp[0]: (tp[1], tp[2]) for tp in self.cursor.execute(
+            'select * from term_layout'
+        ).fetchall()}
+
+    def get_ignored_terms(self):
+        """Return list of ignored terms."""
+        return [t[0] for t in self.cursor.execute(
+            'select term from ignored_terms'
+        ).fetchall()]
+
     def get_clusters(self):
         return {
             t[0]: t[1].split(',')
             for t in self.cursor.execute('select mapped_term, group_concat(term) from term_mapping group by mapped_term')
         }
-
-    def get_cluster_layout(self):
-        """Return cluster layout of terms."""
-        return self.cursor.execute(
-            'select term, x, y, cluster from cluster_layout'
-        ).fetchall()
 
 
 def delete_index(index_path):
