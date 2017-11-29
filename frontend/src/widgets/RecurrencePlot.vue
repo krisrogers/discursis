@@ -341,7 +341,6 @@
       },
       // Zoom based on d3 event transform
       zoom () {
-        console.log('wtf')
         let transform = d3.event.transform
         this.scale = { x: transform.k, y: transform.k }
         this.position = { x: transform.x, y: transform.y }

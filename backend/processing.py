@@ -108,6 +108,7 @@ def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, 
         if delta:
             term_vectors = util.generate_term_vectors(terms)
         tree = spatial.cKDTree(list(concept_vectors.values()))
+        labels = list(concept_vectors.keys())
     elif model in ('term', 'term-expansion'):
         # Term model
         concept_vectors = util.generate_term_vectors(terms)
@@ -181,7 +182,7 @@ def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, 
         if model == 'composition':
             if (len(utterance_terms) > 0):
                 hits = tree.query(embedding, k=5)[1]
-                utterance['themes'] = ([terms[i] for i in hits[:len(utterance_terms)]])
+                utterance['themes'] = ([labels[i] for i in hits[:len(utterance_terms)]])
             else:
                 utterance['themes'] = []
 

@@ -42,7 +42,6 @@
     },
     watch: {
       distanceThreshold () {
-        console.log('update mofo')
         this.getData()
       }
     },

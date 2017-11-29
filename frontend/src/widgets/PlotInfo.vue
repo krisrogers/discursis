@@ -42,7 +42,6 @@
     },
     watch: {
       plotItems (v) {
-        console.log(v, this.recurrenceMatrix)
         this.mutablePlotItems = v
       }
     }
