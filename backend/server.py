@@ -86,9 +86,10 @@ def term_layout(id):
 def upload():
     """Upload files to create a new project."""
     project_name = request.form.get('project_name')
+    language = request.form.get('language').lower()
     files = list(request.files.values())
     try:
-        project = projects.create(project_name, files)
+        project = projects.create(project_name, language, files)
     except projects.ProjectError as e:
         app.logger.error(e)
         return abort(Response(json.dumps({'msg': str(e)}), 400))

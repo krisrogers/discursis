@@ -53,12 +53,6 @@ class TestProcessing:
         terms = index_reader.get_terms_ordered()
         vectors, skipped_terms = processing.get_term_vectors(terms)
         terms = filter(lambda t: t not in skipped_terms, terms)
-        import json
-        with open('vectors.txt', 'w') as f:
-            f.write(json.dumps({
-                term: vectors[i]
-                for i, term in enumerate(terms)
-            }))
         # similarities = processing.find_similar_terms(terms, 1)
         # assertion
         # processing.generate_term_clusters(terms, similarities)

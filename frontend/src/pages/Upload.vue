@@ -14,6 +14,17 @@
         <label>Project Name</label>
         <input type="text" v-model="projectName" placeholder="Enter project name...">
       </div>
+      <div class="inline field">
+        <label>Language</label>
+        <div class="ui inline compact dropdown plot-sizing">
+          <div class="text"></div>
+          <i class="dropdown icon"></i>
+          <div class="menu">
+            <div class="item">English</div>
+            <div class="item">Chinese</div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="ui basic segment">
       <button :disabled="hasFiles === false || projectName.length === 0" class="positive ui button" @click="processFiles">Process Files</button>
@@ -24,6 +35,7 @@
   </div>
 </template>
 <script>
+  import $ from 'jquery'
   import Dropzone from 'vue2-dropzone/src/index.vue'
 
   export default {
@@ -32,8 +44,16 @@
       return {
         error: null,
         hasFiles: false,
-        projectName: ''
+        projectName: '',
+        language: 'English'
       }
+    },
+    mounted () {
+      this.$nextTick(() => {
+        $(this.$el).find('.dropdown').dropdown('set selected', this.language).dropdown({
+          onChange: (v) => { this.language = v }
+        })
+      })
     },
     methods: {
       addFile (file) {
@@ -54,6 +74,7 @@
       // Inject form data before upload
       beforeUpload (files, xhr, formData) {
         formData.append('project_name', this.projectName)
+        formData.append('language', this.language)
         this.error = null
       },
       // Continue after success
