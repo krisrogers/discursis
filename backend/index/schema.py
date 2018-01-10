@@ -56,10 +56,5 @@ create table ignored_terms (
     foreign key(term) references term_stats(term)
 );
 
-create table term_mapping (
-    term text primary key,
-    mapped_term text
-);
-
 commit;
 """

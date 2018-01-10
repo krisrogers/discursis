@@ -92,19 +92,6 @@ class IndexUpdater:
         # Cursor for future writing
         self.cursor = self.connection.cursor()
 
-    def create_term_mappings(self, term_groups):
-        insert_data = []
-        for lead_term, terms in term_groups.items():
-            for term in terms:
-                for aa in insert_data:
-                    if aa[0] == term:
-                        print('wtf', terms, aa)
-                insert_data.append((term, lead_term))
-        self.cursor.executemany(
-            'insert into term_mapping(term, mapped_term) values (?, ?)',
-            insert_data
-        )
-
     def save_term_layout(self, terms, positions):
         """Save `positions` of `terms` representing a 2D layout."""
         insert_data = ((
@@ -136,7 +123,7 @@ class IndexReader:
         self.connection = sqlite3.connect(os.path.join(index_path, INDEX_FILE))
         self.cursor = self.connection.cursor()
 
-    def get_utterances(self, start, limit, include_text=False):
+    def get_utterances(self, start=None, limit=None, include_text=False):
         q = (
             "select id, channel, length, group_concat(term, '::')" +
 
@@ -152,17 +139,20 @@ class IndexReader:
             # Utterance text join
             ("""
             join utterance_text on utterance_text.utterance_id = utterance.id
-            """ if include_text else "") +
-            #
-
-            """
-
-            where id >= ? and id < ?
-            group by id, utterance_term.utterance_id
-            order by id asc
-            """
+            """ if include_text else "")
         )
-        return self.cursor.execute(q, (start, start + limit)).fetchall()
+        if limit:
+            q += """
+            where id >= ? and id < ?
+            """
+        q += """
+        group by id, utterance_term.utterance_id
+        order by id asc
+        """
+        if limit:
+            return self.cursor.execute(q, (start, start + limit)).fetchall()
+        else:
+            return self.cursor.execute(q).fetchall()
 
     def get_utterance_count(self):
         """Return total number of utterances."""
@@ -197,12 +187,6 @@ class IndexReader:
         return [t[0] for t in self.cursor.execute(
             'select term from ignored_terms'
         ).fetchall()]
-
-    def get_clusters(self):
-        return {
-            t[0]: t[1].split(',')
-            for t in self.cursor.execute('select mapped_term, group_concat(term) from term_mapping group by mapped_term')
-        }
 
 
 def delete_index(index_path):

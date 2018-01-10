@@ -30,7 +30,6 @@ class TestProjects:
         assert len(term_positions) == \
             len(project.get_reader().get_terms_ordered()) - len(project.get_reader().get_ignored_terms())
         project.generate_recurrence('composition')
-        # project.generate_recurrence('term-expansion', num_terms=100)
 
         assert len(projects.listall()) == num_projects + 1
 
@@ -48,5 +47,4 @@ class TestProjects:
         term_positions = list(project.get_reader().get_term_layout())
         assert len(term_positions) == \
             len(project.get_reader().get_terms_ordered()) - len(project.get_reader().get_ignored_terms())
-        # project.generate_recurrence('composition')
-        project.generate_recurrence('term-expansion', num_terms=100)
+        project.generate_recurrence('composition')

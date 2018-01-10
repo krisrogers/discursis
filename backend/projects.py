@@ -85,7 +85,6 @@ class Project(BaseModel):
         if self.language == 'english':
             # processing.generate_cluster_layout(datadir)
             self._create_term_layout()
-            self._create_expansion_model()
 
     def get_reader(self):
         """Get `IndexReader` for this project."""
@@ -101,13 +100,6 @@ class Project(BaseModel):
         positions = [term_positions[term] for term in terms]  # maintain order
         distances = processing.find_similar_terms(positions, distance_threshold)
         return processing.generate_term_clusters(terms, distances)
-
-    def _create_expansion_model(self):
-        """Create and store expansion model for this project."""
-        term_clusters = self.generate_term_clusters()
-        updater = self._get_updater()
-        updater.create_term_mappings(term_clusters)
-        updater.finish()
 
     def get_path(self):
         """Get path for this project's data & index."""
@@ -148,7 +140,7 @@ class ProjectError(Exception):
     pass
 
 
-def create(name, language, files):
+def create(name, files, language='english'):
     """
     Create project with `name` from the specified data `files`.
 

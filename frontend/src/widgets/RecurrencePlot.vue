@@ -12,8 +12,6 @@
             <div class="item" data-value="composition">Compositional</div>
             <div class="item" data-value="composition-delta">Compositional Delta</div>
             <div class="item" data-value="term">Term</div>
-            <div class="item" data-value="term-expansion">Term-Expansion</div>
-            <div class="item" data-value="term-expansion-delta">Term-Expansion Delta</div>
           </div>
         </div>
         <i class="large add square icon settings-btn" @click="toggleSettings"></i>
@@ -113,9 +111,6 @@
       recurrenceFloor () { this.draw() }
     },
     mounted () {
-      EventBus.$on('recurrence-updated', recurrenceMatrix => {
-        // this.draw(recurrenceMatrix)
-      })
       this.$nextTick(() => {
         $(this.$el).find('.ui.dropdown').dropdown()
         $(this.$el).find('.ui.dropdown.model-type').dropdown('set selected', this.modelType).dropdown({
@@ -139,11 +134,14 @@
         modal.classList.add('active')
         Server.getRecurrence(this.projectId, this.modelType, this.numTerms === 'all' ? null : this.numTerms)
           .then((response) => {
+            EventBus.$emit('model-updated', {
+              type: this.modelType,
+              numTerms: this.numTerms
+            })
             modal.classList.remove('active')
             this.recurrenceMatrix = response.data.recurrence_matrix
             this.utterances = response.data.utterances
             this.utteranceCount = response.data.utterance_count
-            console.log(response.data)
             this.channels = response.data.channels
             this.draw()
           })

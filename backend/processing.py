@@ -1,5 +1,5 @@
 """Processing functions."""
-from collections import namedtuple
+from collections import defaultdict, namedtuple
 
 import numpy as np
 from scipy.spatial import distance
@@ -91,6 +91,8 @@ def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, 
     index_reader = IndexReader(project_dir)
     terms = index_reader.get_terms_ordered()
     filter_terms = None
+    if num_terms:
+        filter_terms = set(terms[:num_terms])
 
     # TODO make this a real param
     if model.endswith('-delta'):
@@ -139,8 +141,6 @@ def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, 
         channel = u_data[1]
         utterance_terms = u_data[3].split('::') if u_data[3] else []
         utterance_concepts = utterance_terms
-        if term_mappings:
-            utterance_concepts = set([term_mappings.get(term, term) for term in utterance_concepts])
         if filter_terms:
             utterance_concepts = list(filter(lambda t: t in filter_terms, utterance_concepts))
         utterance = {
@@ -148,9 +148,10 @@ def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, 
             'channel': channel,
             'length': u_data[2],
             'terms': utterance_terms,  # All terms
-            'concepts': utterance_concepts,  # Filtered/mapped
-            'text': u_data[4]
+            'concepts': utterance_concepts  # Filtered/mapped
         }
+        if include_text:
+            utterance['text'] = u_data[4]
         if channel not in channels:
             channels.append(channel)
         # Calcualte utterance embedding
@@ -207,3 +208,22 @@ def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, 
         'recurrence_matrix': recurrence_matrix.tolist(),
         'channels': channels
     }
+
+
+def generate_channel_similarity(project_dir, model, num_terms=None):
+    """
+    Generate channel similarities.
+
+    Returns tuple containing (channel pair, cumulative similarity, count).
+    """
+    recurrence = generate_recurrence(project_dir, model, num_terms, limit=None, include_text=False)
+    channel_similarity = defaultdict(int)
+    channel_cooccurrence = defaultdict(int)
+    for u1 in recurrence['utterances']:
+        for u2 in recurrence['utterances']:
+            if u2['id'] > u1['id']:  # forward direction only
+                ch_key = (u1['channel'], u2['channel'])
+                channel_similarity[ch_key] += recurrence['recurrence_matrix'][u1['id']][u2['id']]
+                channel_cooccurrence[ch_key] += 1
+
+    return map(lambda ch_key: (':'.join(ch_key), channel_similarity[ch_key], channel_cooccurrence[ch_key]), channel_similarity.keys())
