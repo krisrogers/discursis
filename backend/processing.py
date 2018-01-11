@@ -227,3 +227,83 @@ def generate_channel_similarity(project_dir, model, num_terms=None):
                 channel_cooccurrence[ch_key] += 1
 
     return map(lambda ch_key: (':'.join(ch_key), channel_similarity[ch_key], channel_cooccurrence[ch_key]), channel_similarity.keys())
+
+
+Primitives = namedtuple('Primitives', [
+    'self_backward_short', 'self_backward_medium', 'self_backward_long',
+    'self_forward_short', 'self_forward_medium', 'self_forward_long',
+    'other_backward_short', 'other_backward_medium', 'other_backward_long',
+    'other_forward_short', 'other_forward_medium', 'other_forward_long'
+])
+
+
+def generate_primitives(project_dir, model, num_terms=None, short_range=2, medium_range=10):
+    """
+    Generate primitives for an index with specified model parameters.
+
+    Returns a list of `Primitives`.
+    """
+    utterance_primitives = []
+    recurrence = generate_recurrence(project_dir, model, num_terms, limit=None, include_text=False)
+
+    # Precalculate ids by channel
+    channel_utterances = defaultdict(list)
+    ids = []
+    for u in recurrence['utterances']:
+        channel_utterances[u['channel']].append(u['id'])
+        ids.append(u['id'])
+
+    def calc_primitive(vals):
+        return np.sum(vals) / len(vals) if len(vals) else 0
+
+    # Calculate primitives for each utterance
+    similarities = np.array(recurrence['recurrence_matrix'])
+    for u in recurrence['utterances']:
+        self_ids = channel_utterances[u['channel']]
+        other_ids = list(filter(lambda i: i not in self_ids, ids))
+
+        # Self Backward
+        self_backward_ids = list(filter(lambda i: i < u['id'], self_ids))
+        sbl_vals = similarities[u['id'], self_backward_ids]
+        self_backward_long = calc_primitive(sbl_vals)
+        sbm_vals = similarities[u['id'], self_backward_ids[-medium_range:]]
+        self_backward_medium = calc_primitive(sbm_vals)
+        sbs_vals = similarities[u['id'], self_backward_ids[-short_range:]]
+        self_backward_short = calc_primitive(sbs_vals)
+
+        # Self Forward
+        self_forward_ids = list(filter(lambda i: i > u['id'], self_ids))
+        sfl_vals = similarities[u['id'], self_forward_ids]
+        self_forward_long = calc_primitive(sfl_vals)
+        sfm_vals = similarities[u['id'], self_forward_ids[:medium_range]]
+        self_forward_medium = calc_primitive(sfm_vals)
+        sfs_vals = similarities[u['id'], self_forward_ids[:short_range]]
+        self_forward_short = calc_primitive(sfs_vals)
+
+        # Other Backward
+        other_backward_ids = list(filter(lambda i: i < u['id'], other_ids))
+        obl_vals = similarities[u['id'], other_backward_ids]
+        other_backward_long = calc_primitive(obl_vals)
+        obm_vals = similarities[u['id'], other_backward_ids[-medium_range:]]
+        other_backward_medium = calc_primitive(obm_vals)
+        obs_vals = similarities[u['id'], other_backward_ids[-short_range:]]
+        other_backward_short = calc_primitive(obs_vals)
+
+        # Other Forward
+        other_forward_ids = list(filter(lambda i: i > u['id'], other_ids))
+        ofl_vals = similarities[u['id'], other_forward_ids]
+        other_forward_long = calc_primitive(ofl_vals)
+        ofm_vals = similarities[u['id'], other_forward_ids[:medium_range]]
+        other_forward_medium = calc_primitive(ofm_vals)
+        ofs_vals = similarities[u['id'], other_forward_ids[:short_range]]
+        other_forward_short = calc_primitive(ofs_vals)
+
+        # utterance_primitives.append
+        utterance_primitives.append(Primitives(
+            self_backward_short, self_backward_medium, self_backward_long,
+            self_forward_short, self_forward_medium, self_forward_long,
+            other_backward_short, other_backward_medium, other_backward_long,
+            other_forward_short, other_forward_medium, other_forward_long
+        ))
+
+    return utterance_primitives

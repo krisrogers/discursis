@@ -38,7 +38,6 @@ def tokenize(text, language='english', lowercase=True, min_word_length=0, stopwo
     The tokens on output are maximal contiguous sequences of alphabetic characters.
     """
     language = language.lower()
-    print(language)
     if language == 'english':
         stopwords = stopwords or STOPWORDS
         if lowercase:

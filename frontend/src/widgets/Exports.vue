@@ -9,11 +9,21 @@
       </div>
       <div class="thirteen wide column">
         <div class="ui cards">
+          <!-- Channel similarity -->
           <div class="card" @click="downloadChannelSimilarity">
             <div class="content">
               <div class="header">Channel Similarities <i class="download icon"></i></div>
               <div class="description">
                 Cumulative similaritiy between all channel pairs.
+              </div>
+            </div>
+          </div>
+          <!-- Primitives -->
+          <div class="card" @click="downloadPrimitives">
+            <div class="content">
+              <div class="header">Primitives <i class="download icon"></i></div>
+              <div class="description">
+                Cumulative similarity over predefined utterance ranges.
               </div>
             </div>
           </div>
@@ -41,6 +51,9 @@
     methods: {
       downloadChannelSimilarity () {
         Server.downloadChannelSimilarity(this.projectId, this.modelConfig.type, this.modelConfig.numTerms)
+      },
+      downloadPrimitives () {
+        Server.downloadPrimitives(this.projectId, this.modelConfig.type, this.modelConfig.numTerms)
       }
     }
   }
