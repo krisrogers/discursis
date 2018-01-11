@@ -14,6 +14,7 @@ class TestProcessing:
 
     # TEST_FILE = 'test_data/Air France 447.csv'
     TEST_FILE = 'test_data/denton-kennet.csv'
+    N = 121
 
     def setup_class(self):
         """Setup."""
@@ -36,29 +37,25 @@ class TestProcessing:
 
     def test_recurrence(self):
         """Test generating recurrence for index."""
-        n = 121
+        n = TestProcessing.N
         result = processing.generate_recurrence(self.project_path, 'composition-delta', num_terms=100)
         assert len(result['utterances']) == n and len(result['recurrence_matrix']) == n
         result = processing.generate_recurrence(self.project_path, 'term')
         assert len(result['utterances']) == n and len(result['recurrence_matrix']) == n
         result = processing.generate_recurrence(self.project_path, 'composition')
         assert len(result['utterances']) == n and len(result['recurrence_matrix']) == n
-        result = processing.generate_recurrence(self.project_path, 'term-expansion', num_terms=100)
-        assert len(result['utterances']) == n and len(result['recurrence_matrix']) == n
-        result = processing.generate_recurrence(self.project_path, 'term-expansion-delta', num_terms=100)
-        assert len(result['utterances']) == n and len(result['recurrence_matrix']) == n
+
+    def test_channel_similarity(self):
+        """Test generation of channel similarity export for an index."""
+        n = TestProcessing.N
+        result = processing.generate_channel_similarity(self.project_path, 'composition')
+        print(result)
 
     def test_similar_terms(self):
         index_reader = self.project.get_reader()
         terms = index_reader.get_terms_ordered()
         vectors, skipped_terms = processing.get_term_vectors(terms)
         terms = filter(lambda t: t not in skipped_terms, terms)
-        import json
-        with open('vectors.txt', 'w') as f:
-            f.write(json.dumps({
-                term: vectors[i]
-                for i, term in enumerate(terms)
-            }))
         # similarities = processing.find_similar_terms(terms, 1)
         # assertion
         # processing.generate_term_clusters(terms, similarities)

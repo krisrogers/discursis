@@ -2,6 +2,8 @@
 import os
 import re
 
+import jieba
+
 
 # Match all word contractions, except possessives which we split to retain the root owner.
 # We discard possessives because the are of no use (in english anyway).
@@ -29,16 +31,25 @@ with open(os.path.join(os.path.dirname(__file__), 'resources', 'stopwords-englis
     STOPWORDS = set([line.strip() for line in stopwords_file])
 
 
-def tokenize(text, lowercase=True, min_word_length=0, stopwords=None):
+def tokenize(text, language='english', lowercase=True, min_word_length=0, stopwords=None):
     """
     Iteratively yield tokens as strings, optionally also lowercasing them and/or filtering by `min_word_length`.
 
     The tokens on output are maximal contiguous sequences of alphabetic characters.
     """
-    stopwords = stopwords or STOPWORDS
-    if lowercase:
-        text = text.lower()
-    for match in RE_TERM.finditer(text):
-        word = match.group()
-        if len(word) >= min_word_length and word not in stopwords:
-            yield word
+    language = language.lower()
+    print(language)
+    if language == 'english':
+        stopwords = stopwords or STOPWORDS
+        if lowercase:
+            text = text.lower()
+        for match in RE_TERM.finditer(text):
+            word = match.group()
+            if len(word) >= min_word_length and word not in stopwords:
+                yield word
+    elif language == 'chinese':
+        for word in jieba.cut(text):
+            if RE_TERM.match(word):
+                yield word
+    else:
+        raise ValueError('Unsupported language {}'.format(language))

@@ -1,7 +1,9 @@
 """Flask server for Discursis prototype."""
+import csv
+import io
 import ujson as json
 
-from flask import Flask, abort, request, Response
+from flask import Flask, abort, request, Response, make_response
 from flask_cors import CORS, cross_origin
 
 import processing
@@ -86,14 +88,34 @@ def term_layout(id):
 def upload():
     """Upload files to create a new project."""
     project_name = request.form.get('project_name')
+    language = request.form.get('language').lower()
     files = list(request.files.values())
     try:
-        project = projects.create(project_name, files)
+        project = projects.create(project_name, files, language)
     except projects.ProjectError as e:
         app.logger.error(e)
         return abort(Response(json.dumps({'msg': str(e)}), 400))
 
     return json.dumps(project.as_dict())
+
+
+@app.route('/projects/<id>/exports/channel-similarity', methods=['GET'])
+def download_channel_similarity(id):
+    """Download channel similarity CSV with specified model parameters."""
+    project = projects.get(id)
+    num_terms = request.args.get('num_terms', type=int, default=None)
+    model = request.args.get('model')
+    f = io.StringIO()
+    writer = csv.writer(f)
+    writer.writerow(['Channel Pair', 'Cumulative Similarity', 'Count'])
+    writer.writerows(processing.generate_channel_similarity(projects.get_project_dir(id), model, num_terms))
+    f.seek(0)
+    response = make_response(f.read())
+    filename = '{}-channel-similarity-{}-{}.csv'.format(project.name, model, num_terms or 'all')
+    response.headers['Content-Disposition'] = 'attachment; filename=' + filename
+    response.mimetype = 'text/csv'
+
+    return response
 
 
 @app.route('/cluster', methods=['GET'])

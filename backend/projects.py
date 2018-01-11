@@ -32,10 +32,12 @@ class Project(BaseModel):
     __tablename__ = 'project'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True)
+    language = Column(String(100))
 
-    def __init__(self, name):
+    def __init__(self, name, language):
         """Create new project."""
         self.name = name
+        self.language = language
 
     def add_data(self, files):
         """
@@ -75,14 +77,14 @@ class Project(BaseModel):
                         utterance_metadata[metadata_index[i]] = cell
                 index_writer.add_utterance(
                     utterance_metadata[channel_id], utterance_text, utterance_metadata,
-                    Counter(text_util.tokenize(utterance_text))
+                    Counter(text_util.tokenize(utterance_text, language=self.language))
                 )
 
         index_writer.finish()
 
-        # processing.generate_cluster_layout(datadir)
-        self._create_term_layout()
-        self._create_expansion_model()
+        if self.language == 'english':
+            # processing.generate_cluster_layout(datadir)
+            self._create_term_layout()
 
     def get_reader(self):
         """Get `IndexReader` for this project."""
@@ -98,13 +100,6 @@ class Project(BaseModel):
         positions = [term_positions[term] for term in terms]  # maintain order
         distances = processing.find_similar_terms(positions, distance_threshold)
         return processing.generate_term_clusters(terms, distances)
-
-    def _create_expansion_model(self):
-        """Create and store expansion model for this project."""
-        term_clusters = self.generate_term_clusters()
-        updater = self._get_updater()
-        updater.create_term_mappings(term_clusters)
-        updater.finish()
 
     def get_path(self):
         """Get path for this project's data & index."""
@@ -145,7 +140,7 @@ class ProjectError(Exception):
     pass
 
 
-def create(name, files):
+def create(name, files, language='english'):
     """
     Create project with `name` from the specified data `files`.
 
@@ -160,7 +155,7 @@ def create(name, files):
             raise ProjectError('Invalid file type; Accepted types: {}'.format(ALLOWED_EXTENSIONS))
 
     # Create project
-    project = Project(name)
+    project = Project(name, language)
     db_session.add(project)
     db_session.commit()
     project.add_data(files)

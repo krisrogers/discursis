@@ -4,6 +4,15 @@ const API_URL = `http://${window.location.hostname}:5000`
 
 export default {
 
+  // Download channel similarity with specified model settings.
+  downloadChannelSimilarity (projectId, modelType, numTerms) {
+    let url = `${API_URL}/projects/${projectId}/exports/channel-similarity?model=${modelType}`
+    if (numTerms) {
+      url += `&num_terms=${numTerms}`
+    }
+    window.open(url)
+  },
+
   // Get list of all available projects.
   getProjects () {
     return axios.get(`${API_URL}/projects`)

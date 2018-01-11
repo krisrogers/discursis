@@ -11,11 +11,15 @@
     </div>
     <div class="ui pointing secondary menu">
       <div class="active item" data-tab="plot">Recurrence Plot</div>
+      <div class="item" data-tab="exports">Data Exports</div>
       <div class="item" data-tab="cluster">Cluster Layout</div>
       <div class="item" data-tab="similar-terms">Similar Terms</div>
     </div>
     <div class="ui bottom attached active tab segment" data-tab="plot">
       <recurrence-plot :projectId="projectId"></recurrence-plot>
+    </div>
+    <div class="ui bottom attached tab segment" data-tab="exports">
+      <exports :projectId="projectId"></exports>
     </div>
     <div class="ui bottom attached tab segment" data-tab="cluster">
       <cluster-layout :projectId="projectId" ref="cluster"></cluster-layout>
@@ -29,12 +33,13 @@
 import $ from 'jquery'
 
 import ClusterLayout from '../widgets/ClusterLayout.vue'
+import Exports from '../widgets/Exports.vue'
 import RecurrencePlot from '../widgets/RecurrencePlot.vue'
 import SimilarTerms from '../widgets/SimilarTerms.vue'
 import Server from 'src/server'
 
 export default {
-  components: { ClusterLayout, RecurrencePlot, SimilarTerms },
+  components: { ClusterLayout, Exports, RecurrencePlot, SimilarTerms },
   props: ['projectId'],
   data () {
     return {
