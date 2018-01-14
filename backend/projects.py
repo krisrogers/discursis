@@ -82,9 +82,8 @@ class Project(BaseModel):
 
         index_writer.finish()
 
-        if self.language == 'english':
-            # processing.generate_cluster_layout(datadir)
-            self._create_term_layout()
+        # processing.generate_cluster_layout(datadir)
+        self._create_term_layout()
 
     def get_reader(self):
         """Get `IndexReader` for this project."""

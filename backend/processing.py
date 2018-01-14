@@ -11,7 +11,6 @@ from index import IndexReader, IndexUpdater
 import util
 
 BOOLEAN_FREQ = True
-NUM_TERMS = 200
 
 
 # Load PP-XXL Embeddings
@@ -21,11 +20,12 @@ for embedding in open('resources/paragram-phrase-XXL.txt'):
     PP_EMBEDDINGS[parts[0]] = [float(v) for v in parts[1:]]
 
 
-# Load stopwords
-STOPWORDS = [w.strip() for w in open('resources/stopwords-english.txt')]
-
-
-Model = namedtuple('Model', ['text_embeddings'])
+# Load ZH Embeddings
+for embedding in open('resources/zh.tsv'):
+    parts = embedding.split('\t')
+    vals = [float(v) for v in parts[1].split(',')]
+    if parts[0] not in PP_EMBEDDINGS:
+        PP_EMBEDDINGS[parts[0]] = vals
 
 
 def get_term_vectors(terms):
@@ -80,9 +80,12 @@ def generate_cluster_layout(dir, n_clusters=25):
     index_writer.finish()
 
 
-def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, include_text=True, delta=False, n_themes=3):
+def generate_recurrence(
+    project_dir, model, num_terms=None,
+    start=0, limit=250, include_text=True, delta=False, n_themes=3
+):
     """
-    Generate recurrence for an index.recurrence_matrix
+    Generate recurrence for an index.recurrence_matrix.
 
     # TODO -- partial update (no text excerpts)
 
@@ -121,15 +124,6 @@ def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, 
     # Term mappings & filter terms
     if num_terms:
         filter_terms = set(terms[:num_terms])
-    term_mappings = None
-    if model == 'term-expansion':
-        clusters = index_reader.get_clusters()
-        term_mappings = {}
-        for cluster_name, cluster_terms in clusters.items():
-            for term in cluster_terms:
-                term_mappings[term] = cluster_name
-        if num_terms:
-            filter_terms.update(set(list(filter(lambda t: term_mappings.get(t, t) == t, terms))[:num_terms]))
 
     # Load utterances and calculate embeddings
     utterances = []
@@ -162,7 +156,7 @@ def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, 
         if len(utterance_concept_vectors):
             if model == 'composition':
                 if len(utterance_concept_vectors) > 1:
-                    embedding = np.sum(utterance_concept_vectors, axis=0)
+                    embedding = np.mean(utterance_concept_vectors, axis=0)
                 else:
                     embedding = utterance_concept_vectors[0]
             else:
@@ -175,11 +169,12 @@ def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, 
                 for term in filter(lambda t: not filter_terms or t in filter_terms, utterance_terms)
             ])
             if len(utterance_term_vectors):
-                utterance_embeddings_term.append(np.sum(utterance_term_vectors, axis=0))
+                utterance_embeddings_term.append(np.mean(utterance_term_vectors, axis=0))
             else:
                 utterance_embeddings_term.append(np.zeros(len(terms)))
 
         utterance_embeddings.append(embedding)
+
         if model == 'composition':
             if (len(utterance_terms) > 0):
                 hits = tree.query(embedding, k=n_themes)[1]
@@ -198,9 +193,7 @@ def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, 
             distance.pdist(utterance_embeddings_term, metric='cosine')))
         )
         recurrence_matrix_term = np.clip(recurrence_matrix_term, 0, 1)
-        # print(recurrence_matrix[57, 108], recurrence_matrix_term[57, 108], recurrence_matrix.shape)
         recurrence_matrix = np.subtract(recurrence_matrix, recurrence_matrix_term)
-        # print('delta', recurrence_matrix[57, 108])
 
     return {
         'utterances': utterances,
