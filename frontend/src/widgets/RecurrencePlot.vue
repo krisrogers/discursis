@@ -78,6 +78,7 @@
   import PlotInfo from './PlotInfo.vue'
   import Server from 'src/server'
   import EventBus from 'src/bus.js'
+  import Util from 'src/util.js'
 
   // http://colorbrewer2.org
   const COLOURS = [
@@ -277,7 +278,7 @@
           if (iUtterance.themes) {
             tipText += `\nThemes: ${iUtterance.themes.join(', ')}`
           } else {
-            tipText += `\nConcepts: ${iUtterance.concepts.join(', ')}`
+            tipText += Util.truncate(`\nConcepts: ${iUtterance.concepts.join(', ')}`)
           }
           createTooltip(diagBox, tipText)
           layer.add(diagBox)
@@ -327,7 +328,7 @@
                 tipText += `\nShared themes: ${sharedThemes.join(', ')}`
               } else {
                 let sharedConcepts = iUtterance.concepts.filter((c) => jUtterance.concepts.indexOf(c) >= 0)
-                tipText += `\nShared concepts: ${sharedConcepts.join(', ')}`
+                tipText += Util.truncate(`\nShared concepts: ${sharedConcepts.join(', ')}`)
               }
               createTooltip(box, tipText)
               layer.add(box)
