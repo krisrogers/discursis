@@ -1,6 +1,9 @@
 <template>
   <div id="plot-container">
-    <div class="utterance-count" v-if="utteranceCount">Showing Utterances 1 to {{ utterances.length }} of {{ utteranceCount }}</div>
+    <div class="utterance-count" v-if="utteranceCount">
+      Showing Utterances 1 to {{ utterances.length }} of {{ utteranceCount }}
+    </div>
+    <i class="image outline icon image-export" @click="downloadImage" title="Download Image"></i>
     <!-- Plot options dialog -->
     <div class="ui right internal attached rail plot-options center">
       <div class="ui segment stacked">
@@ -144,6 +147,50 @@
       })
     },
     methods: {
+      // Download full sized image of the plot.
+      downloadImage () {
+        // Temporarily resize and rescale
+        if (this.scale) {
+          this.layer.scale({ x: 1, y: 1 })
+          this.layer.position({ x: 0, y: 0 })
+          this.layer.draw()
+        }
+        let clientRect = this.layer.getClientRect()
+        let w = this.stage.width()
+        let h = this.stage.height()
+        this.stage.width(clientRect.width)
+        this.stage.height(clientRect.height)
+
+        let exportCanvas = document.createElement('canvas')
+        let exportContext = exportCanvas.getContext('2d')
+        exportCanvas.height = clientRect.height
+        exportCanvas.width = clientRect.width
+        exportContext.fillStyle = 'white'
+        exportContext.fillRect(0, 0, clientRect.width, clientRect.height)
+        let img = new Image()
+        img.onload = function () {
+          exportContext.drawImage(img, 0, 0, clientRect.width, clientRect.height)
+          let uri = exportCanvas.toDataURL()
+
+          // Trigger image download
+          let link = document.createElement('a')
+          link.download = 'recurrence.png'
+          link.href = uri
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+        }
+        img.src = this.stage.toDataURL()
+
+        // Restore size and scale
+        this.stage.width(w)
+        this.stage.height(h)
+        if (this.scale) {
+          this.layer.scale(this.scale)
+          this.layer.position(this.position)
+          this.layer.draw()
+        }
+      },
       getData () {
         let modal = document.querySelector('.ui.dimmer')
         modal.classList.add('active')
@@ -193,6 +240,15 @@
         })
         let layer = this.layer = new Konva.Layer()
         stage.add(layer)
+
+        this.background = new Konva.Rect({
+          x: 0,
+          y: 0,
+          width: containerEl.width(),
+          height: containerEl.height(),
+          fill: 'white'
+        })
+        layer.add(this.background)
 
         let tooltipLayer = new Konva.Layer()
         stage.add(tooltipLayer)
@@ -358,6 +414,13 @@
         layer.draw()
         document.querySelector('.ui.dimmer').classList.remove('active')
       },
+      reset () {
+        this.layer.scale({ x: 1, y: 1 })
+        this.layer.position({ x: 0, y: 0 })
+        this.scale = null
+        this.position = null
+        this.layer.draw()
+      },
       // Zoom based on d3 event transform
       zoom () {
         let transform = d3.event.transform
@@ -373,7 +436,9 @@
 <style lang="stylus" scoped>
   #plot-container
     height: 100%
+    overflow: hidden
     .plot-options
+      height: auto
       position: fixed !important
       z-index: 1
       .settings-btn
@@ -390,10 +455,20 @@
       position: absolute
       background-color: white
       color: #95a6ac
-      margin-left: 10px
+      left: 10px
       font-size: 0.9em
-      line-height: 0.9em
+      line-height: 1.5em
       margin-bottom: 0
       padding: 0
       z-index: 99
+
+    .image-export
+      cursor: pointer
+      font-size: 2em
+      position: absolute
+      right: 10px
+      bottom: 10px
+      z-index: 99
+      &:hover
+        color: #2185D0
 </style>
