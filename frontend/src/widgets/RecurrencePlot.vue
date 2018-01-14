@@ -49,6 +49,7 @@
               <div class="text"></div>
               <i class="dropdown icon"></i>
               <div class="menu">
+                <div class="item">auto</div>
                 <div class="item">0</div>
                 <div class="item">0.1</div>
                 <div class="item">0.2</div>
@@ -98,7 +99,7 @@
         numTerms: 'all',
         modelType: 'composition',
         sizing: 'scaled',
-        recurrenceFloor: 0.3,
+        recurrenceFloor: 'auto',
         boxSizeMin: 6,
         boxSizeMax: 20,
         selectedItems: null
@@ -111,10 +112,19 @@
       recurrenceFloor () { this.draw() }
     },
     mounted () {
+      let labelFloor = () => {
+        if (this.recurrenceFloor === 'auto') {
+          let rf = this.modelType.startsWith('composition') ? 0.3 : 0
+          $(this.$el).find('.ui.dropdown.recurrence-floor').dropdown('set text', `auto (${rf})`)
+        }
+      }
       this.$nextTick(() => {
         $(this.$el).find('.ui.dropdown').dropdown()
         $(this.$el).find('.ui.dropdown.model-type').dropdown('set selected', this.modelType).dropdown({
-          onChange: (v) => { this.modelType = v }
+          onChange: (v) => {
+            this.modelType = v
+            labelFloor()
+          }
         })
         $(this.$el).find('.ui.dropdown.plot-sizing').dropdown('set selected', this.sizing).dropdown({
           onChange: (v) => { this.sizing = v }
@@ -123,8 +133,12 @@
           onChange: (v) => { this.numTerms = v }
         })
         $(this.$el).find('.ui.dropdown.recurrence-floor').dropdown('set selected', this.recurrenceFloor).dropdown({
-          onChange: (v) => { this.recurrenceFloor = v }
+          onChange: (v) => {
+            this.recurrenceFloor = v
+            labelFloor()
+          }
         })
+        labelFloor()
         this.getData()
       })
     },
@@ -156,6 +170,12 @@
       draw (padding = 50) {
         if (this.stage) {
           this.stage.destroy()
+        }
+        let floor
+        if (this.recurrenceFloor === 'auto') {
+          floor = this.modelType.startsWith('composition') ? 0.3 : 0
+        } else {
+          floor = this.recurrenceFloor
         }
         let boxSizeScale
         if (this.sizing === 'scaled') {
@@ -267,7 +287,7 @@
             if (this.sizing === 'scaled') {
               rowHeight = boxSizeScale(jUtterance.length)
             }
-            if (col[j] >= this.recurrenceFloor) {
+            if (col[j] >= floor) {
               let colour2 = COLOURS[this.channels.indexOf(jUtterance.channel)]
               let boxConfig = {
                 x: xPos,
