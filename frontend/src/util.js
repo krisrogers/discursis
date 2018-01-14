@@ -15,7 +15,6 @@ export default {
     link.setAttribute('href', data)
     link.setAttribute('download', filename)
     link.click()
-    document.removeChild(link)
   },
 
   truncate (text, maxChars = 150) {
