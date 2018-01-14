@@ -56,7 +56,7 @@
   import Util from 'src/util'
 
   export default {
-    props: ['projectId'],
+    props: ['project'],
     data () {
       return {
         modelConfig: {}
@@ -69,7 +69,7 @@
     },
     methods: {
       downloadChannelSimilarity () {
-        Server.downloadChannelSimilarity(this.projectId, this.modelConfig.type, this.modelConfig.numTerms)
+        Server.downloadChannelSimilarity(this.project.id, this.modelConfig.type, this.modelConfig.numTerms)
       },
       downloadConcepts () {
         // Build list of concepts
@@ -96,10 +96,10 @@
           }
           data.push([i].concat(row))
         })
-        Util.downloadCSV(data, 'concepts.csv')
+        Util.downloadCSV(data, `${this.project.name}-${this.modelConfig.numTerms}-concepts.csv`)
       },
       downloadPrimitives () {
-        Server.downloadPrimitives(this.projectId, this.modelConfig.type, this.modelConfig.numTerms)
+        Server.downloadPrimitives(this.project.id, this.modelConfig.type, this.modelConfig.numTerms)
       },
       // Download themes for composition model.
       downloadThemes () {
@@ -127,7 +127,7 @@
           }
           data.push([i].concat(row))
         })
-        Util.downloadCSV(data, 'themes.csv')
+        Util.downloadCSV(data, `${this.project.name}-themes.csv`)
       }
     }
   }
