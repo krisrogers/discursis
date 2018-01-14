@@ -27,6 +27,24 @@
               </div>
             </div>
           </div>
+          <!-- Themes -->
+          <div class="card" @click="downloadThemes" v-if="modelConfig.type && modelConfig.type.startsWith('composition')">
+            <div class="content">
+              <div class="header">Themes <i class="download icon"></i></div>
+              <div class="description">
+                Themes identified for utterances.
+              </div>
+            </div>
+          </div>
+           <!-- Concepts -->
+          <div class="card" @click="downloadConcepts">
+            <div class="content">
+              <div class="header">Concepts <i class="download icon"></i></div>
+              <div class="description">
+                Concepts identified for utterances.
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -35,6 +53,7 @@
 <script>
   import EventBus from 'src/bus.js'
   import Server from 'src/server'
+  import Util from 'src/util'
 
   export default {
     props: ['projectId'],
@@ -52,8 +71,63 @@
       downloadChannelSimilarity () {
         Server.downloadChannelSimilarity(this.projectId, this.modelConfig.type, this.modelConfig.numTerms)
       },
+      downloadConcepts () {
+        // Build list of concepts
+        let concepts = new Set()
+        this.modelConfig.data.utterances.forEach((u) => {
+          u.concepts.forEach((c) => {
+            concepts.add(c)
+          })
+        })
+        concepts = Array.from(concepts)
+        concepts.sort()
+        let conceptIndex = {}
+        concepts.forEach((c, i) => {
+          conceptIndex[c] = i
+        })
+
+        // Generate data
+        let headers = ['Utterance'].concat(concepts)
+        let data = [headers]
+        this.modelConfig.data.utterances.forEach((u, i) => {
+          let row = Array.apply(null, Array(concepts.length)).map(Number.prototype.valueOf, 0)
+          for (let concept of u.concepts) {
+            row[conceptIndex[concept]] = 1
+          }
+          data.push([i].concat(row))
+        })
+        Util.downloadCSV(data, 'concepts.csv')
+      },
       downloadPrimitives () {
         Server.downloadPrimitives(this.projectId, this.modelConfig.type, this.modelConfig.numTerms)
+      },
+      // Download themes for composition model.
+      downloadThemes () {
+        // Build list of themes
+        let themes = new Set()
+        this.modelConfig.data.utterances.forEach((u) => {
+          u.themes.forEach((t) => {
+            themes.add(t)
+          })
+        })
+        themes = Array.from(themes)
+        themes.sort()
+        let themeIndex = {}
+        themes.forEach((t, i) => {
+          themeIndex[t] = i
+        })
+
+        // Generate data
+        let headers = ['Utterance'].concat(themes)
+        let data = [headers]
+        this.modelConfig.data.utterances.forEach((u, i) => {
+          let row = Array.apply(null, Array(themes.length)).map(Number.prototype.valueOf, 0)
+          for (let theme of u.themes) {
+            row[themeIndex[theme]] = 1
+          }
+          data.push([i].concat(row))
+        })
+        Util.downloadCSV(data, 'themes.csv')
       }
     }
   }

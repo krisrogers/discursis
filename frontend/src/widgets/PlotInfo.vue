@@ -50,7 +50,7 @@
 <style lang="stylus" scoped>
   .item-info.rail
     height: auto
-    max-height: 600px
+    max-height: 90%
     overflow-y: auto
     width: 600px
     z-index: 2

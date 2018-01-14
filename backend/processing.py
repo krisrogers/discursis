@@ -80,7 +80,7 @@ def generate_cluster_layout(dir, n_clusters=25):
     index_writer.finish()
 
 
-def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, include_text=True, delta=False):
+def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, include_text=True, delta=False, n_themes=3):
     """
     Generate recurrence for an index.recurrence_matrix
 
@@ -182,7 +182,7 @@ def generate_recurrence(project_dir, model, num_terms=None, start=0, limit=250, 
         utterance_embeddings.append(embedding)
         if model == 'composition':
             if (len(utterance_terms) > 0):
-                hits = tree.query(embedding, k=5)[1]
+                hits = tree.query(embedding, k=n_themes)[1]
                 utterance['themes'] = ([labels[i] for i in hits[:len(utterance_terms)]])
             else:
                 utterance['themes'] = []

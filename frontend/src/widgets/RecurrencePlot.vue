@@ -198,7 +198,8 @@
           .then((response) => {
             EventBus.$emit('model-updated', {
               type: this.modelType,
-              numTerms: this.numTerms
+              numTerms: this.numTerms,
+              data: response.data
             })
             modal.classList.remove('active')
             this.recurrenceMatrix = response.data.recurrence_matrix
