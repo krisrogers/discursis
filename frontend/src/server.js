@@ -13,6 +13,15 @@ export default {
     window.open(url)
   },
 
+  // Download primitives with specified model settings.
+  downloadPrimitives (projectId, modelType, numTerms) {
+    let url = `${API_URL}/projects/${projectId}/exports/primitives?model=${modelType}`
+    if (numTerms) {
+      url += `&num_terms=${numTerms}`
+    }
+    window.open(url)
+  },
+
   // Get list of all available projects.
   getProjects () {
     return axios.get(`${API_URL}/projects`)

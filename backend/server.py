@@ -118,6 +118,32 @@ def download_channel_similarity(id):
     return response
 
 
+@app.route('/projects/<id>/exports/primitives', methods=['GET'])
+def download_primitives(id):
+    """Download primtivies CSV with specified model parameters."""
+    project = projects.get(id)
+    num_terms = request.args.get('num_terms', type=int, default=None)
+    model = request.args.get('model')
+    result = processing.generate_primitives(projects.get_project_dir(id), model, num_terms)
+    fields = result[0]._fields
+    f = io.StringIO()
+    writer = csv.writer(f)
+    headers = ['Utterance']
+    headers.extend(fields)
+    writer.writerow(headers)
+    for i, r in enumerate(result):
+        row = [i + 1]
+        row.extend([getattr(r, field) for field in fields])
+        writer.writerow(row)
+    f.seek(0)
+    response = make_response(f.read())
+    filename = '{}-primitives-{}-{}.csv'.format(project.name, model, num_terms or 'all')
+    response.headers['Content-Disposition'] = 'attachment; filename=' + filename
+    response.mimetype = 'text/csv'
+
+    return response
+
+
 @app.route('/cluster', methods=['GET'])
 @cross_origin()
 def cluster():
