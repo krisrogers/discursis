@@ -92,7 +92,7 @@
 
   export default {
     components: { PlotInfo },
-    props: ['projectId'],
+    props: ['project'],
     data () {
       return {
         utterances: null,
@@ -149,6 +149,7 @@
     methods: {
       // Download full sized image of the plot.
       downloadImage () {
+        let filename = `${this.project.name}-recurrence.png`
         // Temporarily resize and rescale
         if (this.scale) {
           this.layer.scale({ x: 1, y: 1 })
@@ -174,7 +175,7 @@
 
           // Trigger image download
           let link = document.createElement('a')
-          link.download = 'recurrence.png'
+          link.download = filename
           link.href = uri
           document.body.appendChild(link)
           link.click()
@@ -194,11 +195,12 @@
       getData () {
         let modal = document.querySelector('.ui.dimmer')
         modal.classList.add('active')
-        Server.getRecurrence(this.projectId, this.modelType, this.numTerms === 'all' ? null : this.numTerms)
+        Server.getRecurrence(this.project.id, this.modelType, this.numTerms === 'all' ? null : this.numTerms)
           .then((response) => {
             EventBus.$emit('model-updated', {
               type: this.modelType,
-              numTerms: this.numTerms
+              numTerms: this.numTerms,
+              data: response.data
             })
             modal.classList.remove('active')
             this.recurrenceMatrix = response.data.recurrence_matrix

@@ -16,10 +16,10 @@
       <div class="item" data-tab="similar-terms">Similar Terms</div>
     </div>
     <div class="ui bottom attached active tab segment" data-tab="plot">
-      <recurrence-plot :projectId="projectId"></recurrence-plot>
+      <recurrence-plot :project="project" v-if="project"></recurrence-plot>
     </div>
     <div class="ui bottom attached tab segment" data-tab="exports">
-      <exports :projectId="projectId"></exports>
+      <exports :project="project" v-if="project"></exports>
     </div>
     <div class="ui bottom attached tab segment" data-tab="cluster">
       <cluster-layout :projectId="projectId" ref="cluster"></cluster-layout>
