@@ -1,1 +1,2 @@
 backend/resources/paragram-phrase-XXL.txt filter=lfs diff=lfs merge=lfs -text
+backend/resources/zh.tsv filter=lfs diff=lfs merge=lfs -text
