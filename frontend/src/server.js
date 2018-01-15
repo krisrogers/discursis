@@ -22,6 +22,10 @@ export default {
     window.open(url)
   },
 
+  getUploadUrl () {
+    return `${API_URL}/upload`
+  },
+
   // Get list of all available projects.
   getProjects () {
     return axios.get(`${API_URL}/projects`)

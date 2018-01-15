@@ -7,7 +7,7 @@
         View Projects
       </button>
     </div>
-    <dropzone ref="dropzone" id="file-upload" url="http://localhost:5000/upload" :autoProcessQueue="false" :duplicateCheck="true" :uploadMultiple="true" @vdropzone-file-added="addFile" @vdropzone-removed-file="removeFile" :acceptedFileTypes="'.csv'" @vdropzone-success-multiple="uploadSuccess" @vdropzone-sending-multiple="beforeUpload" @vdropzone-error="uploadError" @vdropzone-queue-complete="uploadComplete">
+    <dropzone ref="dropzone" id="file-upload" :url="uploadUrl" :autoProcessQueue="false" :duplicateCheck="true" :uploadMultiple="true" @vdropzone-file-added="addFile" @vdropzone-removed-file="removeFile" :acceptedFileTypes="'.csv'" @vdropzone-success-multiple="uploadSuccess" @vdropzone-sending-multiple="beforeUpload" @vdropzone-error="uploadError" @vdropzone-queue-complete="uploadComplete">
     </dropzone>
     <div class="ui basic segment form">
       <div class="inline field">
@@ -38,6 +38,8 @@
   import $ from 'jquery'
   import Dropzone from 'vue2-dropzone/src/index.vue'
 
+  import Server from 'src/server'
+
   export default {
     components: { Dropzone },
     data () {
@@ -46,6 +48,11 @@
         hasFiles: false,
         projectName: '',
         language: 'English'
+      }
+    },
+    computed: {
+      uploadUrl () {
+        return Server.getUploadUrl()
       }
     },
     mounted () {
