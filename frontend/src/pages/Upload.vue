@@ -7,7 +7,7 @@
         View Projects
       </button>
     </div>
-    <dropzone ref="dropzone" id="file-upload" :url="uploadUrl" :autoProcessQueue="false" :duplicateCheck="true" :uploadMultiple="true" @vdropzone-file-added="addFile" @vdropzone-removed-file="removeFile" :acceptedFileTypes="'.csv'" @vdropzone-success-multiple="uploadSuccess" @vdropzone-sending-multiple="beforeUpload" @vdropzone-error="uploadError" @vdropzone-queue-complete="uploadComplete">
+    <dropzone ref="dropzone" id="file-upload" :url="uploadUrl" :autoProcessQueue="false" :duplicateCheck="true" :uploadMultiple="true" @vdropzone-file-added="addFile" @vdropzone-removed-file="removeFile" :acceptedFileTypes="'.csv'" @vdropzone-success-multiple="uploadSuccess" @vdropzone-sending-multiple="beforeUpload" @vdropzone-error="uploadError" @vdropzone-queue-complete="uploadComplete" :maxFileSizeInMB="200">
     </dropzone>
     <div class="ui basic segment form">
       <div class="inline field">
@@ -108,9 +108,16 @@
         }
       },
       // Handle server error
-      uploadError (files, error) {
-        error = JSON.parse(error)
-        this.error = error.msg
+      uploadError (files, error, response) {
+        this.hasFiles = false
+        if (response && response.status === 413) {
+          this.error = 'Upload too large. Maximum total upload size is 5 Megabytes.'
+        } else {
+          try {
+            error = JSON.parse(error)
+            this.error = error.msg
+          } catch (Exception) {}
+        }
         document.querySelector('.ui.dimmer').classList.remove('active')
       },
       waitOnStatus (projectId) {
