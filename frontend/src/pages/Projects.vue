@@ -30,24 +30,25 @@
     </div>
 
     <!-- Projects list -->
-    <table class="ui celled selectable table">
+    <table class="ui celled selectable striped table">
       <thead>
-        <tr>
-          <th>Name</th>
-          <th class="remove-col">&nbsp;</th>
-        </tr>
       </thead>
       <tbody>
-        <tr v-for="project in projects">
-          <td @click="$router.push({ name: 'results' , params: { projectId: project.id }})">
+        <tr v-for="project in projects" :class="{ 'clickable': project.status.toLowerCase() === 'ready' }">
+          <td @click="clickProject(project)">
             {{ project.name }}
+            <div class="status error" v-if="project.status.toLowerCase() === 'error'" :title="project.status_info">
+              {{ project.status }}
+            </div>
+            <div class="status running" v-else-if="project.status.toLowerCase() === 'running'">
+              <div class="ui active inline tiny loader"></div>{{ project.status }}
+            </div>
+            <div class="status" v-else>
+              {{ project.status }}
+            </div>
           </td>
           <td>
-            <i class="red remove icon" @click="deleteProject(project)" v-if="project.status.toLowerCase() === 'ready'"></i>
-            <span v-else-if="project.status.toLowerCase() === 'error'" :title="project.status_info">
-              Error
-            </span>
-            <span v-else>{{ project.status }}</span>
+            <i class="red remove icon" @click="deleteProject(project)" v-if="project.status.toLowerCase() === 'ready' || project.status.toLowerCase() === 'error'"></i>
           </td>
         </tr>
         <tr v-if="projects.length === 0">
@@ -76,6 +77,11 @@
       })
     },
     methods: {
+      clickProject (project) {
+        if (project.status.toLowerCase() === 'ready') {
+          this.$router.push({ name: 'results', params: { projectId: project.id }})
+        }
+      },
       getData (update = false) {
         let dimmer
         if (!update) {
@@ -115,17 +121,34 @@
   .table
     font-size: 1.1rem
     margin: 20px auto
-    width: 60%
-    min-width: 400px
+    width: 500px
     td:nth-child(2), th:nth-child(2)
       border-left: none !important
       width: 40px
-    tbody tr
+    tbody tr.clickable
       cursor: pointer
+      &:hover .remove.icon
+        visibility: visible
+    td
+      font-size: 14px
+      font-weight: bold
+      div.status
+        padding: 3px 0px 3px 9px
+        font-size: 13px
+        font-weight: normal
+        color: #808080
+        &.error
+          color: #db2828
+        &.running
+          color: #f2711c
+          .loader
+            margin-right: 10px
+            vertical-align: top
     .remove.icon
       cursor: pointer
-      transition: font-size 200ms
+      visibility: hidden
       line-height: 1.4rem
-      &:hover
-        font-size: 1.4rem
+      font-size: 24px
+    tr:hover .remove-icon
+      visibility: visible
 </style>
