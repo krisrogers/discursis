@@ -219,7 +219,10 @@ def generate_channel_similarity(project_dir, model, num_terms=None):
                 channel_similarity[ch_key] += recurrence['recurrence_matrix'][u1['id']][u2['id']]
                 channel_cooccurrence[ch_key] += 1
 
-    return map(lambda ch_key: (':'.join(ch_key), channel_similarity[ch_key], channel_cooccurrence[ch_key]), channel_similarity.keys())
+    return map(
+        lambda ch_key: (ch_key[0], ch_key[1], channel_similarity[ch_key], channel_cooccurrence[ch_key]),
+        channel_similarity.keys()
+    )
 
 
 Primitives = namedtuple('Primitives', [

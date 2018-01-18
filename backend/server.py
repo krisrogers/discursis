@@ -130,7 +130,7 @@ def download_channel_similarity(id):
     model = request.args.get('model')
     f = io.StringIO()
     writer = csv.writer(f)
-    writer.writerow(['Channel Pair', 'Cumulative Similarity', 'Count'])
+    writer.writerow(['From', 'To', 'Cumulative Similarity', 'Count'])
     writer.writerows(processing.generate_channel_similarity(projects.get_project_dir(id), model, num_terms))
     f.seek(0)
     response = make_response(f.read())
