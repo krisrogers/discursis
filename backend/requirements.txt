@@ -1,3 +1,10 @@
+amqp==2.2.2
+billiard==3.5.0.3
+boto==2.48.0
+boto3==1.5.14
+botocore==1.8.28
+bz2file==0.98
+celery==4.1.0
 certifi==2017.7.27.1
 chardet==3.0.4
 click==6.7
@@ -5,6 +12,7 @@ cycler==0.10.0
 cymem==1.31.2
 cytoolz==0.8.2
 dill==0.2.7.1
+docutils==0.14
 Flask==0.12.2
 Flask-Cors==3.0.3
 Flask-Sockets==0.2.1
@@ -17,6 +25,8 @@ idna==2.6
 itsdangerous==0.24
 jieba==0.39
 Jinja2==2.9.6
+jmespath==0.9.3
+kombu==4.1.0
 MarkupSafe==1.0
 matplotlib==2.1.0
 msgpack-numpy==0.4.2
@@ -33,12 +43,16 @@ python-dateutil==2.6.1
 python-engineio==1.7.0
 python-socketio==1.8.0
 pytz==2017.3
+redis==2.10.6
 regex==2017.4.5
 requests==2.18.4
+s3transfer==0.1.12
 scikit-learn==0.19.0
 scipy==0.19.0
 six==1.10.0
 sklearn==0.0
+smart-open==1.5.6
+spacy==2.0.3
 SQLAlchemy==1.1.14
 termcolor==1.1.0
 thinc==6.10.1
@@ -46,6 +60,7 @@ toolz==0.8.2
 tqdm==4.15.0
 ujson==1.35
 urllib3==1.22
+vine==1.1.4
 wcwidth==0.1.7
 webencodings==0.5.1
 Werkzeug==0.12.2
