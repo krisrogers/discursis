@@ -5,6 +5,7 @@
   import $ from 'jquery'
   import * as d3 from 'd3'
 
+  import EventBus from 'src/bus'
   import Server from 'src/server'
 
   export default {
@@ -40,6 +41,7 @@
           this.terms = terms
           this.termVectors = termVectors
           this.clusterLabels = Object.keys(response.data.clusters)
+          EventBus.$emit('layout-updated', terms)
         })
       },
       draw (terms, termVectors, clusterLabels, padding = 20) {

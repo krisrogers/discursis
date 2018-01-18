@@ -45,6 +45,15 @@
               </div>
             </div>
           </div>
+           <!-- Concept layout -->
+          <div class="card" @click="downloadConceptLayout">
+            <div class="content">
+              <div class="header">Concept Layout <i class="download icon"></i></div>
+              <div class="description">
+                Concept positions in 2D layout.
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -66,10 +75,23 @@
       EventBus.$on('model-updated', modelConfig => {
         this.modelConfig = modelConfig
       })
+      EventBus.$on('layout-updated', concepts => {
+        this.layoutConcepts = concepts
+      })
     },
     methods: {
       downloadChannelSimilarity () {
         Server.downloadChannelSimilarity(this.project.id, this.modelConfig.type, this.modelConfig.numTerms)
+      },
+      downloadConceptLayout () {
+        console.log(this.layoutConcepts)
+        // Generate data
+        let headers = ['Concept', 'X', 'Y', 'Frequency']
+        let data = [headers]
+        this.layoutConcepts.forEach((concept) => {
+          data.push([concept.name, concept.position[0], concept.position[1], concept.frequency])
+        })
+        Util.downloadCSV(data, `${this.project.name}-concept-layout.csv`)
       },
       downloadConcepts () {
         // Build list of concepts
