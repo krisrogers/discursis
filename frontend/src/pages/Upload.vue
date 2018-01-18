@@ -87,8 +87,7 @@
       // Continue after success
       uploadSuccess (files, result) {
         result = JSON.parse(result)
-        document.querySelector('.ui.dimmer').classList.remove('active')
-        this.$router.push({ name: 'results', params: { projectId: result.id }})
+        this.waitOnStatus(result.id)
       },
       // Post-processing after upload
       uploadComplete (f, r) {
@@ -113,6 +112,23 @@
         error = JSON.parse(error)
         this.error = error.msg
         document.querySelector('.ui.dimmer').classList.remove('active')
+      },
+      waitOnStatus (projectId) {
+        setTimeout(() => {
+          Server.getProject(projectId)
+            .then((response) => {
+              let status = response.data.status.toLowerCase()
+              if (status === 'ready') {
+                document.querySelector('.ui.dimmer').classList.remove('active')
+                this.$router.push({ name: 'results', params: { projectId: projectId }})
+              } else if (status === 'error') {
+                document.querySelector('.ui.dimmer').classList.remove('active')
+                this.error = response.data.status_info
+              } else {
+                this.waitOnStatus(projectId)
+              }
+            })
+        }, 5000)
       }
     }
   }

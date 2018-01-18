@@ -3,6 +3,7 @@ import csv
 import io
 import ujson as json
 
+from celery import Celery
 from flask import Flask, abort, request, Response, make_response
 from flask_cors import CORS, cross_origin
 
@@ -10,9 +11,31 @@ import processing
 import projects
 
 
+def make_celery(app):
+    """Setup celery for Flask."""
+    celery = Celery(app.import_name, backend=app.config['CELERY_RESULT_BACKEND'],
+                    broker=app.config['CELERY_BROKER_URL'])
+    celery.conf.update(app.config)
+    BaseTask = celery.Task
+
+    class ContextTask(BaseTask):
+        abstract = True
+
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return BaseTask.__call__(self, *args, **kwargs)
+    celery.Task = ContextTask
+    return celery
+
+# Setup Flask application
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+app.config.update(
+    CELERY_BROKER_URL='redis://localhost:6379',
+    CELERY_RESULT_BACKEND='redis://localhost:6379'
+)
+celery = make_celery(app)
 
 
 @app.route('/projects/<id>', methods=['DELETE'])

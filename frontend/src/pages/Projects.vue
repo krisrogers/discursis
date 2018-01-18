@@ -43,7 +43,11 @@
             {{ project.name }}
           </td>
           <td>
-            <i class="red remove icon" @click="deleteProject(project)"></i>
+            <i class="red remove icon" @click="deleteProject(project)" v-if="project.status.toLowerCase() === 'ready'"></i>
+            <span v-else-if="project.status.toLowerCase() === 'error'" :title="project.status_info">
+              Error
+            </span>
+            <span v-else>{{ project.status }}</span>
           </td>
         </tr>
         <tr v-if="projects.length === 0">
@@ -72,13 +76,21 @@
       })
     },
     methods: {
-      getData () {
-        let dimmer = document.querySelector('.ui.dimmer')
-        dimmer.classList.add('active')
+      getData (update = false) {
+        let dimmer
+        if (!update) {
+          dimmer = document.querySelector('.ui.dimmer')
+          dimmer.classList.add('active')
+        }
         Server.getProjects().then((result) => {
           this.projects = result.data
-          dimmer.classList.remove('active')
+          if (!update) {
+            dimmer.classList.remove('active')
+          }
         })
+        setTimeout(() => {
+          this.getData(true)
+        }, 5000)
       },
       deleteProject (project) {
         this.projectToDelete = project

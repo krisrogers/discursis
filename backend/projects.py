@@ -5,10 +5,11 @@ Projects encapsulate data, settings and results for a recurrence analysis.
 """
 from collections import Counter
 import csv
-from io import TextIOWrapper
+from io import StringIO, TextIOWrapper
 import os
 import shutil
 
+from celery import shared_task
 from sqlalchemy import Column, Integer, String
 
 from database import db_session, BaseModel
@@ -20,6 +21,7 @@ import text_util
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 PROJECTS_DIR = os.path.join(BASE_DIR, 'projects')
 ALLOWED_EXTENSIONS = set(['csv'])
+CHANNEL_HEADERS = ('channel', 'speaker', 'name')
 
 # Create projects dir
 if not os.path.exists(PROJECTS_DIR):
@@ -32,12 +34,15 @@ class Project(BaseModel):
     __tablename__ = 'project'
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True)
+    status = Column(String(10))
+    status_info = Column(String(200))
     language = Column(String(100))
 
     def __init__(self, name, language):
         """Create new project."""
         self.name = name
         self.language = language
+        self.status = 'Pending'
 
     def add_data(self, files):
         """
@@ -49,41 +54,46 @@ class Project(BaseModel):
         os.makedirs(project_path)
         index_writer = IndexWriter(project_path)
 
-        for f in files:
-            reader = csv.reader(TextIOWrapper(f))
+        try:
+            for filename, data in files.items():
+                f = StringIO(data)
+                reader = csv.reader(f)
 
-            # Process headers
-            channel_id = None
-            metadata_index = {}
-            headers = [h.lower() for h in next(reader)]
-            for i, header in enumerate(headers):
-                header = header.strip().lower()
-                if header == 'text':
-                    text_index = i
-                else:
-                    field_id = index_writer.add_metadata_field(header)
-                    metadata_index[i] = field_id
-                    if header in ('channel', 'speaker', 'name'):
-                        channel_id = field_id
-
-            # Process rows
-            for row in reader:
-                utterance_metadata = {}
-                # TODO: split into smaller utterances?
-                for i, cell in enumerate(row):
-                    if i == text_index:
-                        utterance_text = cell
+                # Process headers
+                channel_id = None
+                metadata_index = {}
+                headers = [h.lower() for h in next(reader)]
+                for i, header in enumerate(headers):
+                    header = header.strip().lower()
+                    if header == 'text':
+                        text_index = i
                     else:
-                        utterance_metadata[metadata_index[i]] = cell
-                index_writer.add_utterance(
-                    utterance_metadata[channel_id], utterance_text, utterance_metadata,
-                    Counter(text_util.tokenize(utterance_text, language=self.language))
-                )
+                        field_id = index_writer.add_metadata_field(header)
+                        metadata_index[i] = field_id
+                        if header in CHANNEL_HEADERS:
+                            channel_id = field_id
 
-        index_writer.finish()
+                # Process rows
+                for row in reader:
+                    utterance_metadata = {}
+                    # TODO: split into smaller utterances?
+                    for i, cell in enumerate(row):
+                        if i == text_index:
+                            utterance_text = cell
+                        else:
+                            utterance_metadata[metadata_index[i]] = cell
+                    index_writer.add_utterance(
+                        utterance_metadata[channel_id], utterance_text, utterance_metadata,
+                        Counter(text_util.tokenize(utterance_text, language=self.language))
+                    )
 
-        # processing.generate_cluster_layout(datadir)
-        self._create_term_layout()
+            index_writer.finish()
+
+            # processing.generate_cluster_layout(datadir)
+            self._create_term_layout()
+        except Exception as e:
+            shutil.rmtree(project_path, True)
+            raise e
 
     def get_reader(self):
         """Get `IndexReader` for this project."""
@@ -108,7 +118,9 @@ class Project(BaseModel):
         """Get dict for this Project instance."""
         return {
             'id': self.id,
-            'name': self.name
+            'language': self.language,
+            'name': self.name,
+            'status': self.status
         }
 
     def generate_recurrence(self, model, num_terms=None):
@@ -134,9 +146,8 @@ class Project(BaseModel):
         return IndexUpdater(self.get_path())
 
 
-
 class ProjectError(Exception):
-    pass
+    """Encapsulates any error creating, modifying or deleting a Project."""
 
 
 def create(name, files, language='english'):
@@ -148,26 +159,58 @@ def create(name, files, language='english'):
     if Project.query.filter_by(name=name).first():
         raise ProjectError('A project called {} already exists; Please use a different name.'.format(name))
 
-    # Check filetypes
+    # Check file types and schema
     for f in files:
         if not _allowed_file(f.filename):
             raise ProjectError('Invalid file type; Accepted types: {}'.format(ALLOWED_EXTENSIONS))
+        # Look for channel field
+        csv_input = csv.reader(TextIOWrapper(f))
+        headers = next(csv_input)
+        f.seek(0)
+        if len(list(filter(lambda h: h.lower() in CHANNEL_HEADERS, headers))) == 0:
+            raise ProjectError(
+                'Data file "{}" missing channel field. '.format(f.filename) +
+                'Specify channel field using one of the following column headers: {}'.format(CHANNEL_HEADERS)
+            )
 
     # Create project
     project = Project(name, language)
-    db_session.add(project)
-    db_session.commit()
-    project.add_data(files)
+    try:
+        db_session.add(project)
+        db_session.commit()
+    except Exception as e:
+        db_session.rollback()
+        raise e
+    _run_and_save_project.delay(project.id, {f.filename: TextIOWrapper(f).read() for f in files})
 
     return project
+
+
+@shared_task
+def _run_and_save_project(project_id, files):
+    project = Project.query.get(project_id)
+    project.status = 'Running'
+    db_session.commit()
+    try:
+        project.add_data(files)
+    except Exception as e:
+        project.status = 'Error'
+        project.status_info = str(e)
+        raise ProjectError(e)
+    project.status = 'Ready'
+    db_session.commit()
 
 
 def delete(id):
     """Delete the specified project."""
     project = Project.query.get(id)
-    db_session.delete(project)
-    db_session.commit()
-    shutil.rmtree(os.path.join(PROJECTS_DIR, str(project.id)))
+    try:
+        db_session.delete(project)
+        db_session.commit()
+    except Exception as e:
+        db_session.rollback()
+        raise e
+    shutil.rmtree(os.path.join(PROJECTS_DIR, id), True)
 
 
 def find(name):
