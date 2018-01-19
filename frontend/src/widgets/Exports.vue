@@ -28,7 +28,7 @@
             </div>
           </div>
           <!-- Themes -->
-          <div class="card" @click="downloadThemes" v-if="modelConfig.type && modelConfig.type.startsWith('composition')">
+          <div class="card" @click="downloadThemes" v-if="false && modelConfig.type && modelConfig.type.startsWith('composition')">
             <div class="content">
               <div class="header">Themes <i class="download icon"></i></div>
               <div class="description">

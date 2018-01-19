@@ -340,7 +340,7 @@
             this.selectedItems = [item]
           }.bind(this, iUtterance))
           let tipText = `Utterance: ${i + 1}`
-          if (iUtterance.themes) {
+          if (iUtterance.themes && false) {
             tipText += `\nThemes: ${iUtterance.themes.join(', ')}`
           } else {
             tipText += Util.truncate(`\nConcepts: ${iUtterance.concepts.join(', ')}`)
