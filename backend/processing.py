@@ -93,6 +93,7 @@ def generate_recurrence(
     """
     index_reader = IndexReader(project_dir)
     terms = index_reader.get_terms_ordered()
+    ignored_terms = []
     filter_terms = None
     if num_terms:
         filter_terms = set(terms[:num_terms])
@@ -114,6 +115,7 @@ def generate_recurrence(
             term_vectors = util.generate_term_vectors(terms)
         tree = spatial.cKDTree(list(concept_vectors.values()))
         labels = list(concept_vectors.keys())
+        ignored_terms = index_reader.get_ignored_terms()
     elif model in ('term', 'term-expansion'):
         # Term model
         concept_vectors = util.generate_term_vectors(terms)
@@ -136,7 +138,7 @@ def generate_recurrence(
         utterance_terms = u_data[3].split('::') if u_data[3] else []
         utterance_concepts = utterance_terms
         if filter_terms:
-            utterance_concepts = list(filter(lambda t: t in filter_terms, utterance_concepts))
+            utterance_concepts = list(filter(lambda t: t in filter_terms and t not in ignored_terms, utterance_concepts))
         utterance = {
             'id': u_data[0],
             'channel': channel,
