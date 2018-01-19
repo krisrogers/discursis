@@ -84,10 +84,17 @@
   import Util from 'src/util.js'
 
   // http://colorbrewer2.org
-  const COLOURS = [
+  const COLOURS_9 = [
     '#1f78b4', '#e31a1c', '#b15928',
     '#33a02c', '#fb9a99', '#ff7f00',
     '#cab2d6', '#6a3d9a', '#ffff99'
+  ]
+  // https://www.r-bloggers.com/the-paul-tol-21-color-salute/
+  const COLOURS_21 = [
+    '#771155', '#AA4488', '#CC99BB', '#114477', '#4477AA',
+    '#77AADD', '#117777', '#44AAAA', '#77CCCC', '#117744',
+    '#44AA77', '#88CCAA', '#777711', '#AAAA44', '#DDDD77',
+    '#774411', '#AA7744', '#DDAA77', '#771122', '#AA4455', '#DD7788'
   ]
 
   export default {
@@ -300,7 +307,7 @@
         let xPos = padding
         recurrenceMatrix.forEach((col, i) => {
           let iUtterance = this.utterances[i]
-          let colour = COLOURS[this.channels.indexOf(iUtterance.channel)]
+          let colour = this.getColour(this.channels.indexOf(iUtterance.channel))
           iUtterance.colour = colour
           let colWidth, rowHeight
           if (this.sizing === 'uniform') {
@@ -347,7 +354,7 @@
               rowHeight = boxSizeScale(jUtterance.length)
             }
             if (col[j] >= floor) {
-              let colour2 = COLOURS[this.channels.indexOf(jUtterance.channel)]
+              let colour2 = this.getColour(this.channels.indexOf(jUtterance.channel))
               let boxConfig = {
                 x: xPos,
                 y: yPos,
@@ -422,6 +429,13 @@
         this.scale = null
         this.position = null
         this.layer.draw()
+      },
+      getColour (channelIndex) {
+        let colours = this.channels.length >= 10 ? COLOURS_21 : COLOURS_9
+        if (channelIndex < colours.length) {
+          return colours[channelIndex]
+        }
+        return '#ccc'
       },
       // Zoom based on d3 event transform
       zoom () {
