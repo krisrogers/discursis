@@ -164,7 +164,7 @@ def create(name, files, language='english'):
         if not _allowed_file(f.filename):
             raise ProjectError('Invalid file type; Accepted types: {}'.format(ALLOWED_EXTENSIONS))
         # Look for channel field
-        csv_input = csv.reader(TextIOWrapper(f))
+        csv_input = csv.reader(TextIOWrapper(f, encoding='utf-8', errors='ignore'))
         headers = next(csv_input)
         f.seek(0)
         if len(list(filter(lambda h: h.lower() in CHANNEL_HEADERS, headers))) == 0:
@@ -181,7 +181,7 @@ def create(name, files, language='english'):
     except Exception as e:
         db_session.rollback()
         raise e
-    _run_and_save_project.delay(project.id, {f.filename: TextIOWrapper(f).read() for f in files})
+    _run_and_save_project.delay(project.id, {f.filename: TextIOWrapper(f, encoding='utf-8', errors='ignore').read() for f in files})
 
     return project
 
