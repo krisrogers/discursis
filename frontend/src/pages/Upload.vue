@@ -109,7 +109,6 @@
       },
       // Handle server error
       uploadError (files, error, response) {
-        this.hasFiles = false
         if (response && response.status === 413) {
           this.error = 'Upload too large. Maximum total upload size is 5 Megabytes.'
         } else {
