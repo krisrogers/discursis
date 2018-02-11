@@ -181,7 +181,10 @@ def create(name, files, language='english'):
     except Exception as e:
         db_session.rollback()
         raise e
-    _run_and_save_project.delay(project.id, {f.filename: TextIOWrapper(f, encoding='utf-8', errors='ignore').read() for f in files})
+    if os.environ.get('DISCURSIS_TEST', False):
+        _run_and_save_project(project.id, {f.filename: TextIOWrapper(f, encoding='utf-8', errors='ignore').read() for f in files})
+    else:
+        _run_and_save_project.delay(project.id, {f.filename: TextIOWrapper(f, encoding='utf-8', errors='ignore').read() for f in files})
 
     return project
 
@@ -210,7 +213,7 @@ def delete(id):
     except Exception as e:
         db_session.rollback()
         raise e
-    shutil.rmtree(os.path.join(PROJECTS_DIR, id), True)
+    shutil.rmtree(os.path.join(PROJECTS_DIR, str(id)), True)
 
 
 def find(name):

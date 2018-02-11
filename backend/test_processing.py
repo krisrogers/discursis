@@ -45,7 +45,7 @@ class TestProcessing:
     def test_channel_similarity(self):
         """Test generation of channel similarity export for an index."""
         result = list(processing.generate_channel_similarity(self.project_path, 'composition'))
-        assert(len(result[0])) == 3
+        assert(len(result[0])) == 4
 
     def test_primitives(self):
         """Test generation of primitives export for an index."""
@@ -110,8 +110,8 @@ class TestProcessing:
         assert_primitive(22, 41, 'other_forward_medium')
         assert_primitive(6, 119, 'other_forward_long')
 
-
     def test_similar_terms(self):
+        """Test detection of similar terms for corpus."""
         index_reader = self.project.get_reader()
         terms = index_reader.get_terms_ordered()
         vectors, skipped_terms = processing.get_term_vectors(terms)
@@ -119,6 +119,17 @@ class TestProcessing:
         # similarities = processing.find_similar_terms(terms, 1)
         # assertion
         # processing.generate_term_clusters(terms, similarities)
+
+    def test_themes(self):
+        """Test theme inference for utterances."""
+        result = processing.generate_recurrence(self.project_path, 'composition')
+        assert 'youth' in result['utterances'][81]['themes']
+        assert 'young' in result['utterances'][81]['themes']
+        assert 'suicide' in result['utterances'][81]['themes']
+        themes = set()
+        for u in result['utterances']:
+            themes.update(set(u['themes']))
+        assert len(themes) == 176
 
     def test_model(self):
         """Test modelling an index."""

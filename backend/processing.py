@@ -70,6 +70,7 @@ def generate_term_clusters(terms, distances):
 
 
 def generate_cluster_layout(dir, n_clusters=25):
+    """Generate term layout using TSNE."""
     index_reader = IndexReader(dir)
     terms = index_reader.get_terms_ordered()
     term_vectors = [PP_EMBEDDINGS.get(term, np.zeros(300)) for term in terms]
@@ -138,7 +139,10 @@ def generate_recurrence(
         utterance_terms = u_data[3].split('::') if u_data[3] else []
         utterance_concepts = utterance_terms
         if filter_terms:
-            utterance_concepts = list(filter(lambda t: t in filter_terms and t not in ignored_terms, utterance_concepts))
+            utterance_concepts = list(filter(
+                lambda t: t in filter_terms and t not in ignored_terms,
+                utterance_concepts
+            ))
         utterance = {
             'id': u_data[0],
             'channel': channel,
@@ -158,7 +162,7 @@ def generate_recurrence(
         if len(utterance_concept_vectors):
             if model == 'composition':
                 if len(utterance_concept_vectors) > 1:
-                    embedding = np.mean(utterance_concept_vectors, axis=0)
+                    embedding = np.sum(utterance_concept_vectors, axis=0)
                 else:
                     embedding = utterance_concept_vectors[0]
             else:
@@ -171,7 +175,7 @@ def generate_recurrence(
                 for term in filter(lambda t: not filter_terms or t in filter_terms, utterance_terms)
             ])
             if len(utterance_term_vectors):
-                utterance_embeddings_term.append(np.mean(utterance_term_vectors, axis=0))
+                utterance_embeddings_term.append(np.sum(utterance_term_vectors, axis=0))
             else:
                 utterance_embeddings_term.append(np.zeros(len(terms)))
 
