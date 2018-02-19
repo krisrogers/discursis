@@ -12,7 +12,7 @@
     <div class="ui pointing secondary menu">
       <div class="active item" data-tab="plot">Recurrence Plot</div>
       <div class="item" data-tab="exports">Data Exports</div>
-      <div class="item" data-tab="cluster">Cluster Layout</div>
+      <div class="item" data-tab="cluster">Concept Layout</div>
       <div class="item" data-tab="similar-terms">Similar Terms</div>
     </div>
     <div class="ui bottom attached active tab segment" data-tab="plot">
@@ -25,7 +25,7 @@
       <cluster-layout :projectId="projectId" ref="cluster"></cluster-layout>
     </div>
     <div class="ui bottom attached tab segment" data-tab="similar-terms">
-      <similar-terms :projectId="projectId" ref="similar-terms"></similar-terms>
+      <similar-terms :project="project" v-if="project" ref="similar-terms"></similar-terms>
     </div>
   </div>
 </template>

@@ -1,18 +1,19 @@
 /* Utility functions */
+import Papa from 'papaparse'
+
 export default {
 
   // Download the `data` as CSV with specified `filename`.
   downloadCSV (data, filename) {
     // Generate csv data
-    let csv = data.map((row) => {
-      return row.join(',')
-    }).join('\n')
-    csv = 'data:text/csv;charset=utf-8,' + csv
-    data = encodeURI(csv)
+    let csv = Papa.unparse(data)
+    let url = URL.createObjectURL(new Blob([csv], {
+      type: 'text/csv'
+    }))
 
     // Trigger download
     let link = document.createElement('a')
-    link.setAttribute('href', data)
+    link.setAttribute('href', url)
     link.setAttribute('download', filename)
     link.click()
   },

@@ -84,7 +84,6 @@
         Server.downloadChannelSimilarity(this.project.id, this.modelConfig.type, this.modelConfig.numTerms)
       },
       downloadConceptLayout () {
-        console.log(this.layoutConcepts)
         // Generate data
         let headers = ['Concept', 'X', 'Y', 'Frequency']
         let data = [headers]
