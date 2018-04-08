@@ -39,6 +39,7 @@
   import Dropzone from 'vue2-dropzone/src/index.vue'
 
   import Server from 'src/server'
+  import Store from 'src/store.js'
 
   export default {
     components: { Dropzone },
@@ -57,6 +58,7 @@
     },
     mounted () {
       this.$nextTick(() => {
+        this.$refs.dropzone.setOption('headers', { Authorization: Store.getAuthToken() })
         $(this.$el).find('.dropdown').dropdown('set selected', this.language).dropdown({
           onChange: (v) => { this.language = v }
         })

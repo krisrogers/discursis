@@ -12,7 +12,7 @@ import shutil
 from celery import shared_task
 from sqlalchemy import Column, Integer, String
 
-from database import db_session, BaseModel
+from database import db
 from index import IndexReader, IndexUpdater, IndexWriter
 import processing
 import text_util
@@ -28,7 +28,7 @@ if not os.path.exists(PROJECTS_DIR):
     os.makedirs(PROJECTS_DIR)
 
 
-class Project(BaseModel):
+class Project(db.Model):
     """Project model."""
 
     __tablename__ = 'project'
@@ -37,6 +37,7 @@ class Project(BaseModel):
     status = Column(String(10))
     status_info = Column(String(200))
     language = Column(String(100))
+    creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __init__(self, name, language):
         """Create new project."""
@@ -45,11 +46,7 @@ class Project(BaseModel):
         self.status = 'Pending'
 
     def add_data(self, files):
-        """
-        Load the project's data and process it.
-
-        TODO async?
-        """
+        """Load the project's data and process it."""
         project_path = self.get_path()
         os.makedirs(project_path)
         index_writer = IndexWriter(project_path)
@@ -91,6 +88,7 @@ class Project(BaseModel):
 
             # processing.generate_cluster_layout(datadir)
             self._create_term_layout()
+
         except Exception as e:
             shutil.rmtree(project_path, True)
             raise e
@@ -176,10 +174,10 @@ def create(name, files, language='english'):
     # Create project
     project = Project(name, language)
     try:
-        db_session.add(project)
-        db_session.commit()
+        db.session.add(project)
+        db.session.commit()
     except Exception as e:
-        db_session.rollback()
+        db.session.rollback()
         raise e
     if os.environ.get('DISCURSIS_TEST', False):
         _run_and_save_project(project.id, {f.filename: TextIOWrapper(f, encoding='utf-8', errors='ignore').read() for f in files})
@@ -193,7 +191,7 @@ def create(name, files, language='english'):
 def _run_and_save_project(project_id, files):
     project = Project.query.get(project_id)
     project.status = 'Running'
-    db_session.commit()
+    db.session.commit()
     try:
         project.add_data(files)
     except Exception as e:
@@ -201,17 +199,17 @@ def _run_and_save_project(project_id, files):
         project.status_info = str(e)
         raise ProjectError(e)
     project.status = 'Ready'
-    db_session.commit()
+    db.session.commit()
 
 
 def delete(id):
     """Delete the specified project."""
     project = Project.query.get(id)
     try:
-        db_session.delete(project)
-        db_session.commit()
+        db.session.delete(project)
+        db.session.commit()
     except Exception as e:
-        db_session.rollback()
+        db.session.rollback()
         raise e
     shutil.rmtree(os.path.join(PROJECTS_DIR, str(id)), True)
 

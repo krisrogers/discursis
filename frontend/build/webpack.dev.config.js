@@ -70,7 +70,15 @@ module.exports = {
         query: {
           name: 'font/[name].[hash:7].[ext]'
         }
-      }
+      },
+      {
+        test: /\.styl(us)?$/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          'stylus-loader'
+        ]
+      }      
     ]
   },
   plugins: [

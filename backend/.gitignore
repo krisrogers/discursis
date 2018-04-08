@@ -2,4 +2,5 @@ __pycache__
 .cache
 .python-version
 projects/
-projects.db
+*.db
+*.log

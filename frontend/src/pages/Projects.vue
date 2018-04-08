@@ -48,7 +48,7 @@
             </div>
           </td>
           <td>
-            <i class="red remove icon" @click="deleteProject(project)" v-if="project.status.toLowerCase() === 'ready' || project.status.toLowerCase() === 'error'"></i>
+            <i class="red remove icon" @click="deleteProject(project)" v-if="canDelete(project)"></i>
           </td>
         </tr>
         <tr v-if="projects.length === 0">
@@ -77,6 +77,10 @@
       })
     },
     methods: {
+      canDelete (project) {
+        let status = project.status.toLowerCase()
+        return ['ready', 'error', 'pending'].indexOf(status) >= 0
+      },
       clickProject (project) {
         if (project.status.toLowerCase() === 'ready') {
           this.$router.push({ name: 'results', params: { projectId: project.id }})
@@ -125,8 +129,9 @@
     td:nth-child(2), th:nth-child(2)
       border-left: none !important
       width: 40px
-    tbody tr.clickable
-      cursor: pointer
+    tbody tr
+      .clickable
+        cursor: pointer
       &:hover .remove.icon
         visibility: visible
     td
@@ -149,6 +154,6 @@
       visibility: hidden
       line-height: 1.4rem
       font-size: 24px
-    tr:hover .remove-icon
-      visibility: visible
+      &:hover
+        color: #f21010 !important
 </style>
