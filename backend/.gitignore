@@ -4,3 +4,5 @@ __pycache__
 projects/
 *.db
 *.log
+.envrc
+.pytest_cache
