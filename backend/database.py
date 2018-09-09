@@ -6,8 +6,13 @@ from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
+import os
+
 
 db = SQLAlchemy()
+if os.environ.get('DISCURSIS_TEST', False):
+    db = SQLAlchemy(session_options={"expire_on_commit": False})
+
 
 # Database configuration
 """

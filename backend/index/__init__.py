@@ -120,6 +120,7 @@ class IndexUpdater:
 class IndexReader:
     """Allow reading from an index."""
     def __init__(self, index_path):
+        print(os.path.join(index_path, INDEX_FILE))
         self.connection = sqlite3.connect(os.path.join(index_path, INDEX_FILE))
         self.cursor = self.connection.cursor()
 

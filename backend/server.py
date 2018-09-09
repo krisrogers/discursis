@@ -262,6 +262,26 @@ def term_layout(current_user, id):
     })
 
 
+@app.route('/projects/<id>/term_links', methods=['GET'])
+@token_required
+def term_links(current_user, id):
+    """Get 2d layout of terms for this project."""
+    """project = projects.get(id)
+    reader = project.get_reader()
+    positions = reader.get_term_layout()
+    frequencies = reader.get_term_frequencies()
+    clusters = project.generate_term_clusters()
+    return json.dumps({
+        'terms': [{
+            'name': term,
+            'position': positions[term],
+            'frequency': frequency
+        } for term, frequency in frequencies if term in positions],
+        'clusters': clusters
+    })"""
+    pass
+
+
 @app.route('/upload', methods=['POST'])
 @token_required
 def upload(current_user):

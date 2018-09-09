@@ -1,9 +1,13 @@
 """Tests for the processing module."""
+from flask import Flask
 import numpy as np
+from sqlalchemy.orm import sessionmaker
 from werkzeug.datastructures import FileStorage
 
+from database import db
 import processing
 import projects
+import server
 
 
 class TestProcessing:
@@ -15,22 +19,32 @@ class TestProcessing:
 
     def setup_class(self):
         """Setup."""
-        p = projects.find('__test__')
-        if p:
-            projects.delete(p.id)
-        f = open(TestProcessing.TEST_FILE, 'rb')
-        self.project = projects.create('__test__', [FileStorage(f, f.name)])
-        self.project_path = self.project.get_path()
+        self.app = Flask(__name__)
+        db.init_app(self.app)
+        with self.app.app_context():
+            db.create_all()
+            p = projects.find('__test__')
+            if p:
+                projects.delete(p.id)
+            f = open(TestProcessing.TEST_FILE, 'rb')
+            self.project = projects.create('__test__', [FileStorage(f, f.name)])
+            print(self.project.id, 'hello')
+            self.project_path = self.project.get_path()
 
     def teardown_class(self):
         """Cleanup."""
-        projects.delete(self.project.id)
+        with self.app.app_context():
+            projects.delete(self.project.id)
 
     def test_cluster_layout(self):
         """Test generation of the cluster layout for an existing index."""
         # processing.generate_cluster_layout(self.project_path)
         # index_reader = index.IndexReader(self.project_path)
         # print(index_reader.get_cluster_layout())
+
+    def test_generate_term_matrix(self):
+        """Test generation of term x term matrix."""
+        processing.generate_term_matrix(self.project_path)
 
     def test_recurrence(self):
         """Test generating recurrence for index."""

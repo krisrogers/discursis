@@ -81,6 +81,13 @@ def generate_cluster_layout(dir, n_clusters=25):
     index_writer.finish()
 
 
+def generate_term_matrix(project_dir):
+    index_reader = IndexReader(project_dir)
+    for u_data in index_reader.get_utterances():
+        utterance_terms = u_data[3].split('::') if u_data[3] else []
+        print (utterance_terms)
+
+
 def generate_recurrence(
     project_dir, model, num_terms=None,
     start=0, limit=250, include_text=True, delta=False, n_themes=3
