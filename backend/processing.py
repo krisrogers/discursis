@@ -85,7 +85,6 @@ def generate_term_matrix(project_dir):
     index_reader = IndexReader(project_dir)
     for u_data in index_reader.get_utterances():
         utterance_terms = u_data[3].split('::') if u_data[3] else []
-        print (utterance_terms)
 
 
 def generate_recurrence(
@@ -173,6 +172,7 @@ def generate_recurrence(
                 else:
                     embedding = utterance_concept_vectors[0]
             else:
+                # Utterance is represented as the sum of all individual concept vectors
                 embedding = np.sum(utterance_concept_vectors, axis=0)
         else:
             embedding = np.zeros(n_dims)
@@ -182,6 +182,7 @@ def generate_recurrence(
                 for term in filter(lambda t: not filter_terms or t in filter_terms, utterance_terms)
             ])
             if len(utterance_term_vectors):
+                # Utterance is represented as the sum of all individual term vectors
                 utterance_embeddings_term.append(np.sum(utterance_term_vectors, axis=0))
             else:
                 utterance_embeddings_term.append(np.zeros(len(terms)))

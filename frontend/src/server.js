@@ -1,7 +1,24 @@
 import axios from 'axios'
 
+// import auth from 'src/api/auth'
+
 const API_URL = `http://${window.location.hostname}:5000`
 axios.defaults.headers.post['Content-Type'] = 'application/json'
+
+// Add a response interceptor
+axios.interceptors.response.use(function (response) {
+  // Success code, do nothing
+  return response
+}, function (error) {
+  const resp = error.response
+  // Failure code
+  if (resp && resp.status === 401 && resp.data.message.toLowerCase().includes('expired token')) {
+    console.log()
+    axios.$app.$store.clearAuthToken()
+    location.reload()
+  }
+  return Promise.reject(error)
+})
 
 export default {
 

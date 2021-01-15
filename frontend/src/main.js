@@ -1,3 +1,4 @@
+import axios from 'axios'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
@@ -46,3 +47,5 @@ const app = new Vue({
   render: h => h(App)
 })
 app.$mount('#app')
+app.$store = Store
+axios.$app = app
