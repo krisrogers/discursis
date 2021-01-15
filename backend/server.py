@@ -10,6 +10,7 @@ from celery import Celery
 from flask import Flask, jsonify, request, Response, make_response
 from flask_cors import CORS
 from flask_mail import Mail, Message
+from flask_migrate import Migrate
 import jwt
 
 import config
@@ -48,6 +49,7 @@ with app.app_context():
     # Create all database tables
     import projects  # noqa
     db.create_all()
+    migrate = Migrate(app, db)
 
 
 def token_required(f):
