@@ -28,6 +28,23 @@ if not os.path.exists(PROJECTS_DIR):
     os.makedirs(PROJECTS_DIR)
 
 
+class SimpleDoc(object):
+    """
+    Simple document wrapper.
+
+    Mirrors the return objects of Spacy for when we don't use
+    sentence tokenization.
+
+    """
+    class Sent(object):
+        """Simple sentence wrapper."""
+        def __init__(self, text):
+            self.text = text
+
+    def __init__(self, sents):
+        self.sents = [self.Sent(s) for s in sents]
+
+
 class Project(db.Model):
     """Project model."""
 
@@ -37,12 +54,14 @@ class Project(db.Model):
     status = Column(String(10))
     status_info = Column(String(200))
     language = Column(String(100))
+    tokenization = Column(String(100))
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__(self, name, language):
+    def __init__(self, name, language, tokenization):
         """Create new project."""
         self.name = name
         self.language = language
+        self.tokenization = tokenization
         self.status = 'Pending'
 
     def add_data(self, files):
@@ -71,18 +90,24 @@ class Project(db.Model):
                             channel_id = field_id
 
                 # Process rows
+                if self.tokenization == 'sentences':
+                    import spacy
+                    nlp = spacy.load("en_core_web_sm")
+                else:
+                    def nlp(u):
+                        return SimpleDoc([u])
                 for row in reader:
                     utterance_metadata = {}
-                    # TODO: split into smaller utterances?
                     for i, cell in enumerate(row):
                         if i == text_index:
                             utterance_text = cell
                         else:
                             utterance_metadata[metadata_index[i]] = cell
-                    index_writer.add_utterance(
-                        utterance_metadata[channel_id], utterance_text, utterance_metadata,
-                        Counter(text_util.tokenize(utterance_text, language=self.language))
-                    )
+                    for sent in nlp(utterance_text).sents:
+                        index_writer.add_utterance(
+                            utterance_metadata[channel_id], sent.text, utterance_metadata,
+                            Counter(text_util.tokenize(sent.text, language=self.language))
+                        )
 
             index_writer.finish()
 
@@ -148,7 +173,7 @@ class ProjectError(Exception):
     """Encapsulates any error creating, modifying or deleting a Project."""
 
 
-def create(name, files, language='english'):
+def create(name, files, language='english', tokenization='utterances'):
     """
     Create project with `name` from the specified data `files`.
 
@@ -172,7 +197,7 @@ def create(name, files, language='english'):
             )
 
     # Create project
-    project = Project(name, language)
+    project = Project(name, language, tokenization)
     try:
         db.session.add(project)
         db.session.commit()

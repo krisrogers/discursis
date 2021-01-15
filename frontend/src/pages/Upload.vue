@@ -16,12 +16,23 @@
       </div>
       <div class="inline field">
         <label>Language</label>
-        <div class="ui inline compact dropdown plot-sizing">
+        <div class="ui inline compact dropdown language">
           <div class="text"></div>
           <i class="dropdown icon"></i>
           <div class="menu">
             <div class="item">English</div>
             <div class="item">Chinese</div>
+          </div>
+        </div>
+      </div>
+      <div class="inline field">
+        <label>Tokenization</label>
+        <div class="ui inline compact dropdown tokenization">
+          <div class="text"></div>
+          <i class="dropdown icon"></i>
+          <div class="menu">
+            <div class="item">Utterances</div>
+            <div class="item">Sentences</div>
           </div>
         </div>
       </div>
@@ -48,7 +59,8 @@
         error: null,
         hasFiles: false,
         projectName: '',
-        language: 'English'
+        language: 'English',
+        tokenization: 'utterances'
       }
     },
     computed: {
@@ -59,8 +71,11 @@
     mounted () {
       this.$nextTick(() => {
         this.$refs.dropzone.setOption('headers', { Authorization: Store.getAuthToken() })
-        $(this.$el).find('.dropdown').dropdown('set selected', this.language).dropdown({
+        $(this.$el).find('.dropdown.language').dropdown('set selected', this.language).dropdown({
           onChange: (v) => { this.language = v }
+        })
+        $(this.$el).find('.dropdown.tokenization').dropdown('set selected', this.tokenization).dropdown({
+          onChange: (v) => { this.tokenization = v }
         })
       })
     },
@@ -77,6 +92,10 @@
       },
       // Upload & process files
       processFiles () {
+        if (this.language === 'chinese' && this.tokenization === 'sentences') {
+          alert('Sentence tokenization not yet supported for Chinese')
+          return false
+        }
         document.querySelector('.ui.dimmer').classList.add('active')
         this.$refs.dropzone.processQueue()
       },
@@ -84,6 +103,7 @@
       beforeUpload (files, xhr, formData) {
         formData.append('project_name', this.projectName)
         formData.append('language', this.language)
+        formData.append('tokenization', this.tokenization)
         this.error = null
       },
       // Continue after success

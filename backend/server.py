@@ -290,9 +290,10 @@ def upload(current_user):
     """Upload files to create a new project."""
     project_name = request.form.get('project_name')
     language = request.form.get('language').lower()
+    tokenization = request.form.get('tokenization').lower()
     files = list(request.files.values())
     try:
-        project = projects.create(project_name, files, language)
+        project = projects.create(project_name, files, language, tokenization)
     except projects.ProjectError as e:
         app.logger.error(e)
         return Response(json.dumps({'msg': str(e)}), 400)
