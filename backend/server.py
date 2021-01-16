@@ -75,12 +75,28 @@ def token_required(f):
             user = User.query.filter_by(email=data['sub']).first()
             if not user:
                 raise RuntimeError('User not found')
-            return f(user, *args, **kwargs)
+            kwargs['current_user'] = user
+            return f(*args, **kwargs)
         except jwt.ExpiredSignatureError:
             return make_response(jsonify(expired_msg), 401)
         except (jwt.InvalidTokenError, Exception) as e:
             print(e)
             return make_response(jsonify(invalid_msg), 401)
+
+    return _verify
+
+
+def check_project_access(f):
+    """Decorator to check user access to a project."""
+    @wraps(f)
+    def _verify(*args, **kwargs):
+        project_id = kwargs['id']
+        project = projects.get(project_id)
+        if project.creator_id != kwargs['current_user'].id:
+            return make_response(jsonify({
+                'message': f'Current user does not have access to project {project_id}'
+            }), 401)
+        return f(*args, **kwargs)
 
     return _verify
 
@@ -191,13 +207,13 @@ def update_password():
     except jwt.ExpiredSignatureError:
         return make_response(jsonify({'expired': True}), 401)
     except (jwt.InvalidTokenError, Exception) as e:
-        print('exception')
         print(e)
         return make_response(jsonify({'error': True}), 401)
 
 
 @app.route('/projects/<id>', methods=['DELETE'])
 @token_required
+@check_project_access
 def project_delete(current_user, id):
     """Delete the specified project."""
     projects.delete(id)
@@ -206,6 +222,7 @@ def project_delete(current_user, id):
 
 @app.route('/projects/<id>', methods=['GET'])
 @token_required
+@check_project_access
 def project_get(current_user, id):
     """Retrieve the specified project."""
     return json.dumps(projects.get(id).as_dict())
@@ -215,11 +232,12 @@ def project_get(current_user, id):
 @token_required
 def projects_list(current_user):
     """Get the list of projects."""
-    return json.dumps([p.as_dict() for p in projects.listall()])
+    return json.dumps([p.as_dict() for p in projects.listall(current_user.id)])
 
 
 @app.route('/projects/<id>/model', methods=['GET'])
 @token_required
+@check_project_access
 def model(current_user, id):
     """Get recurrence model for the project."""
     num_terms = request.args.get('num_terms', type=int, default=None)
@@ -230,6 +248,7 @@ def model(current_user, id):
 
 @app.route('/projects/<id>/similar_terms', methods=['GET'])
 @token_required
+@check_project_access
 def similar_terms(current_user, id):
     """Get similar terms for this project."""
     project = projects.get(id)
@@ -247,6 +266,7 @@ def similar_terms(current_user, id):
 
 @app.route('/projects/<id>/term_layout', methods=['GET'])
 @token_required
+@check_project_access
 def term_layout(current_user, id):
     """Get 2d layout of terms for this project."""
     project = projects.get(id)
@@ -266,6 +286,7 @@ def term_layout(current_user, id):
 
 @app.route('/projects/<id>/term_links', methods=['GET'])
 @token_required
+@check_project_access
 def term_links(current_user, id):
     """Get 2d layout of terms for this project."""
     """project = projects.get(id)
@@ -293,7 +314,7 @@ def upload(current_user):
     tokenization = request.form.get('tokenization').lower()
     files = list(request.files.values())
     try:
-        project = projects.create(project_name, files, language, tokenization)
+        project = projects.create(current_user.id, project_name, files, language, tokenization)
     except projects.ProjectError as e:
         app.logger.error(e)
         return Response(json.dumps({'msg': str(e)}), 400)
@@ -303,6 +324,7 @@ def upload(current_user):
 
 @app.route('/projects/<id>/exports/channel-similarity', methods=['GET'])
 @token_required
+@check_project_access
 def download_channel_similarity(current_user, id):
     """Download channel similarity CSV with specified model parameters."""
     project = projects.get(id)
@@ -323,6 +345,7 @@ def download_channel_similarity(current_user, id):
 
 @app.route('/projects/<id>/exports/primitives', methods=['GET'])
 @token_required
+@check_project_access
 def download_primitives(current_user, id):
     """Download primtivies CSV with specified model parameters."""
     project = projects.get(id)
@@ -350,6 +373,7 @@ def download_primitives(current_user, id):
 
 @app.route('/cluster', methods=['GET'])
 @token_required
+@check_project_access
 def cluster():
     """Generate cluster from ad hoc project."""
     pass

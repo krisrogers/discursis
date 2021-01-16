@@ -48,6 +48,7 @@
   import $ from 'jquery'
 
   import auth from 'src/api/auth'
+  import Store from 'src/store.js'
 
   export default {
     data () {
@@ -76,6 +77,15 @@
         this.error = null
         auth.register(this.email, this.password)
           .then((response) => {
+            // Auto login
+            auth.login(this.email, this.password)
+              .then((response) => {
+                Store.setAuthToken(this.email, response.data.token)
+                this.$router.push('/')
+              })
+              .catch(() => {
+                this.form.form('add errors', ['Something went wrong. Please contact us.'])
+              })
           })
           .catch((error) => {
             this.error = error.response.data.error

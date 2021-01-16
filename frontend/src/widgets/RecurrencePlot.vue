@@ -456,6 +456,8 @@
     .plot-options
       height: auto
       position: fixed !important
+      right: 5px
+      top: 150px
       z-index: 1
       .settings-btn
         cursor: pointer

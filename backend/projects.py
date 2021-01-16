@@ -50,15 +50,16 @@ class Project(db.Model):
 
     __tablename__ = 'project'
     id = Column(Integer, primary_key=True)
-    name = Column(String(100), unique=True)
+    creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    name = Column(String(100))
     status = Column(String(10))
     status_info = Column(String(200))
     language = Column(String(100))
     tokenization = Column(String(100))
-    creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__(self, name, language, tokenization):
+    def __init__(self, creator_id, name, language, tokenization):
         """Create new project."""
+        self.creator_id = creator_id
         self.name = name
         self.language = language
         self.tokenization = tokenization
@@ -173,13 +174,13 @@ class ProjectError(Exception):
     """Encapsulates any error creating, modifying or deleting a Project."""
 
 
-def create(name, files, language='english', tokenization='utterances'):
+def create(creator_id, name, files, language='english', tokenization='utterances'):
     """
     Create project with `name` from the specified data `files`.
 
     Indexes the data before returning.before
     """
-    if Project.query.filter_by(name=name).first():
+    if Project.query.filter_by(creator_id=creator_id, name=name).first():
         raise ProjectError('A project called {} already exists; Please use a different name.'.format(name))
 
     # Check file types and schema
@@ -197,7 +198,7 @@ def create(name, files, language='english', tokenization='utterances'):
             )
 
     # Create project
-    project = Project(name, language, tokenization)
+    project = Project(creator_id, name, language, tokenization)
     try:
         db.session.add(project)
         db.session.commit()
@@ -254,9 +255,9 @@ def get_project_dir(id):
     return os.path.join(PROJECTS_DIR, id)
 
 
-def listall():
-    """Return a list of all projects."""
-    return Project.query.all()
+def listall(creator_id):
+    """Return a list of all projects owned by `creator_id`."""
+    return Project.query.filter_by(creator_id=creator_id).all()
 
 
 def _allowed_file(filename):
