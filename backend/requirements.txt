@@ -36,7 +36,7 @@ numpy==1.12.1
 pathlib==1.0.1
 plac==0.9.6
 preshed==1.0.0
-py==1.4.34
+py==1.10.0
 pyparsing==2.2.0
 pytest==3.2.2
 python-dateutil==2.6.1
