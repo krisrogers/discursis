@@ -32,7 +32,7 @@ matplotlib==2.1.0
 msgpack-numpy==0.4.2
 msgpack-python==0.4.8
 murmurhash==0.28.0
-numpy==1.12.1
+numpy==1.21.0
 pathlib==1.0.1
 plac==0.9.6
 preshed==1.0.0
